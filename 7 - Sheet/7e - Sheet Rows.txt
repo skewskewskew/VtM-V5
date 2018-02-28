@@ -1,5 +1,6 @@
 
 @create Sheet: Rows
+@fo me=&d.sheet me=[num( Sheet: Rows )]
 @set [v( d.sheet )]=inherit safe
 @fo me=@parent [v( d.sheet )]=[v( d.nsc )]
 
