@@ -24,7 +24,7 @@ returns: character sheet statpaths
 		fil.list-stats-tags, 
 // .. lazy, so turning "_sheet.statpath" into "sheet.statpath" 
 // .. so we can use the filter for non-sheet matches
-		rest( edit( lattr( %0/_%1.* ), %b_, %b ), _ ), 
+		rest( pedit( lattr( %0/_%1.* ), %b_, %b ), _ ), 
 		, 
 		, 
 		%2, 
@@ -99,13 +99,13 @@ Filter based on values list (value.value 2.value 3)
 
 think 
 	filter( v( d.sfp )/fil.list-stats-tags, 
-		trim( edit( lattr( me/_*.* ), %b_, %b ), b, _ ), , , 
+		trim( pedit( lattr( me/_*.* ), %b_, %b ), b, _ ), , , 
 		human 
 	)
 
 think 
 	filter( v( d.sfp )/fil.list-stats-tags, 
-		trim( edit( lattr( me/_*.* ), %b_, %b ), b, _ ), , , 
+		trim( pedit( lattr( me/_*.* ), %b_, %b ), b, _ ), , , 
 		attribute merit 
 	)
 
@@ -119,12 +119,12 @@ think
 
 think 
 	filter( v( d.sfp )/fil.list-stats-values, 
-		trim( edit( lattr( me/_*.* ), %b_, %b ), b, _ ), , , 4 
+		trim( pedit( lattr( me/_*.* ), %b_, %b ), b, _ ), , , 4 
 	)
 
 think 
 	filter( v( d.sfp )/fil.list-stats-values, 
-		trim( edit( lattr( me/_*.* ), %b_, %b ), b, _ ), , , Human 
+		trim( pedit( lattr( me/_*.* ), %b_, %b ), b, _ ), , , Human 
 	)
 
 
@@ -171,7 +171,7 @@ p: return for &prerequisite.<statpath>
 			p, 
 			ulocal( [u( d.data-dictionary )]/prerequisite.%1, 
 				%0, 
-				edit( %2, %b, _ ), 
+				pedit( %2, %b, _ ), 
 				%3 
 			)
 		)]
@@ -182,7 +182,7 @@ p: return for &prerequisite.<statpath>
 			#-3 
 			[u( [u( d.data-dictionary )]/prereq-text.%1, 
 				%0, 
-				edit( %2, _, %b ), 
+				pedit( %2, _, %b ), 
 				%3 
 			)], 
 
