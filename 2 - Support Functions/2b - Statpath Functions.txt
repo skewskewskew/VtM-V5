@@ -289,7 +289,7 @@ Used for validating new purchases if sheet-lookup fails.
 
 // validate stat name:
 		if( 
-			setr( n, u( f.statpath-validate-name, %q0 )), 
+			t( setr( n, u( f.statpath-validate-name, %q0 )) ), 
 			strcat( 
 
 // .. get dd entry
