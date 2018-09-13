@@ -282,9 +282,9 @@ This stat is no lower than another stat
 &.At_Least_Stat [v( d.dd )]=
 	localize( 
 // .. sloppy, but gets the job done
-		[setq( t, trim( first( edit( %2, -, +- ), + )))]
+		[setq( t, trim( first( pedit( %2, -, +- ), + )))]
 		[setq( a, 
-			iter( rest( edit( edit( %2, -%b, - ), -, %b+- ), + ), %i0, + 	)
+			iter( rest( pedit( pedit( %2, -%b, - ), -, %b+- ), + ), %i0, + 	)
 		)]
 		[u( 
 			.at_least, 
@@ -367,9 +367,9 @@ This stat is no higher than another stat
 &.At_Most_Stat [v( d.dd )]=
 	localize( 
 // .. sloppy, but gets the job done
-		[setq( t, trim( first( edit( %2, -, +- ), + )))]
+		[setq( t, trim( first( pedit( %2, -, +- ), + )))]
 		[setq( a, 
-			iter( rest( edit( edit( %2, -%b, - ), -, %b+- ), + ), %i0, + )
+			iter( rest( pedit( pedit( %2, -%b, - ), -, %b+- ), + ), %i0, + )
 		)]
 		[u( .at_most, 
 			%0, 
@@ -677,12 +677,12 @@ Else, assumes translating name->value
 	case( 1, 
 // .. number value -> name
 		isnum( %1 ), 
-		elements( rest( v( %0 ), | ), %1, . ), 
+		elementsmux( rest( v( %0 ), | ), %1, . ), 
 // .. text value -> name
 		t( match( first( v( %0 ), | ), %1, . )), 
-		elements( rest( v( %0 ), | ), match( first( v( %0 ), | ), %1, . ), . ), 
+		elementsmux( rest( v( %0 ), | ), match( first( v( %0 ), | ), %1, . ), . ), 
 // .. name -> value
-		elements( first( v( %0 ), | ), match( rest( v( %0 ), | ), %1*, .), . )
+		elementsmux( first( v( %0 ), | ), match( rest( v( %0 ), | ), %1*, .), . )
 	)
 
 
@@ -783,7 +783,7 @@ same name as the major template from that game-line.
 					grepi( 
 						%!, 
 						.sphere.*, 
-						edit( u( .value_full, %0, bio.template ), %b, _ )
+						pedit( u( .value_full, %0, bio.template ), %b, _ )
 					), 
 					. 
 				)
@@ -833,7 +833,7 @@ Return the skill that has the passed specialty
 	lcstr( 
 		rest( 
 			first( 
-				sort( iter( lattr( %0/_skill.*.%1 ), elements( %i0, 1 2, . )))
+				sort( iter( lattr( %0/_skill.*.%1 ), elementsmux( %i0, 1 2, . )))
 			), 
 			_ 
 		)
