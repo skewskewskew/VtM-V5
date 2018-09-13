@@ -313,7 +313,7 @@ From Lords of Summer, p. 45
 			u(cost.direct, 7, %2)
 		), 
 @@ >> + skipped levels
-		mul(3, words(setdiff(lnum(1, %2), [edit(%1, ., %b)] %2)))
+		mul(3, words(setdiff(lnum(1, %2), [pedit(%1, ., %b)] %2)))
 	)
 
 
