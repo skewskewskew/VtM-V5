@@ -32,6 +32,9 @@ Use these functions for good, not evil.
 
 @fo me=&d.dd me=search( name=Data Dictionary <dd> )
 
+// This assumes you have thenomain's Code Object Data Parent. Replace if you have something else.
+@fo me=&d.codp me=search( name=Code Object Data Parent <codp> )
+
 @fo me=@parent Data Dictionary <dd>=[v( d.codp )]
 &prefix.functions Data Dictionary <dd>=.
 &prefix.attributes Data Dictionary <dd>=attribute.
