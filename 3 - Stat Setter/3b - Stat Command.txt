@@ -46,7 +46,7 @@ This fails on Muxify, so here's the long version:
 &f.stat-switch [v( d.ss )]=
 // Do I know the switch?
 	ifelse( 
-		setr( 0, grab( lattr( %!/f.stat/* ), f.stat/%0* )), 
+		t( setr( 0, grab( lattr( %!/f.stat/* ), f.stat/%0* )) ), 
 // Yes, I know it, hit it
 		u( %q0, %1 ), 
 // No, I don't know it. 
@@ -58,7 +58,7 @@ And the condensed version:
 
 /*
 	
-&f.stat-switch [v( d.ss )]=ifelse( setr( 0, grab( lattr( %!/f.stat/* ), f.stat/%0* )), u( %q0, %1 ), No such switch for 'stat'. Valid switches are: [itemize( lcstr( iter( lattr( %!/f.stat/* ), after( %i0, / ))))] )	
+&f.stat-switch [v( d.ss )]=ifelse( t( setr( 0, grab( lattr( %!/f.stat/* ), f.stat/%0* )) ), u( %q0, %1 ), No such switch for 'stat'. Valid switches are: [itemize( lcstr( iter( lattr( %!/f.stat/* ), after( %i0, / ))))] )	
 
 /*
 --------------------------------------------------------------------------------
