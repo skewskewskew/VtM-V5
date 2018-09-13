@@ -70,9 +70,9 @@ q5: attempt at set( %qd, _special.beats.%qt:<new value> )
 // check for information about xp_log and the target
 	think strcat( 
 		sql log:, setr( l, sql( u( sql.select.entry_num, %qe ), `, | )), %r, 
-		target objid:, setr( o, elements( %ql, 3, | )), %r, 
+		target objid:, setr( o, elementsmux( %ql, 3, | )), %r, 
 		target dbref:, setr( d, first( %qo, : )), %r, 
-		amt to unaward:, setr( s, elements( %ql, 6, | )), %r, 
+		amt to unaward:, setr( s, elementsmux( %ql, 6, | )), %r, 
 		unawarded?:, setr( 0, sql( u( sql.select.unaward.check, %qe ))), %r, 
 	); 
 
@@ -98,8 +98,8 @@ q5: attempt at set( %qd, _special.beats.%qt:<new value> )
 
 // check that the action and xp type are valid
 	think strcat( 
-		action:, %b, setr( a, elements( %ql, 7, | )), %r, 
-		xp type:, %b, setr( t, elements( %ql, 12, | )), %r, 
+		action:, %b, setr( a, elementsmux( %ql, 7, | )), %r, 
+		xp type:, %b, setr( t, elementsmux( %ql, 12, | )), %r, 
 	); 
 
 	@assert strmatch( %qa, gain )={ 
@@ -121,7 +121,7 @@ q5: attempt at set( %qd, _special.beats.%qt:<new value> )
 			strcat( 
 				Unaward: Entry %qe, 
 				if( 
-					strlen( setr( z, elements( %ql, 8, | ))), 
+					strlen( setr( z, elementsmux( %ql, 8, | ))), 
 					%b%(%qz%) 
 				)
 			), 
