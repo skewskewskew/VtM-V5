@@ -14,11 +14,22 @@ this. Else, remember to have your function-creation object read here.
 
 @startup [v( d.sfp )]=
 	@dolist lattr( %!/ufunc.* )=
-		@function/preserve [rest( ##, . )]=%!/##; 
+		@function/pres [rest( ##, . )]=%!/##; 
 	@dolist lattr( %!/ufunc/privileged.* )=
-		@function/preserve/privileged [rest( ##, . )]=%!/##
+		@function/priv/pres [rest( ##, . )]=%!/##
+		
+================================================================================
+== A Note For Rhost! ===========================================================
 
+The default SGP in Rhost uses isstaff() that checks for flags on the target,
+which will NOT count objects as staff. TinyMUX is set up to count objects that
+are flagged inherit and owned by staff as staff. You can update the Rhost SGP
+using...
 
+&fn_isstaff #=[gte(bittype(%0,1),2)]
+
+And another thing... You'll need to up function_invocation_limit
+from 25000 to like 20000. That's done in netrhost.conf.
 
 ================================================================================
 == statpath([<player>/]<stat>) ================================================
@@ -139,7 +150,7 @@ qr: results of f.statpath
 &f.statname.workhorse [v( d.sfp )]=
 	iter( 
 // .. Step 1: Capitalize Words
-		edit( %0, _, %b ), 
+		pedit( %0, _, %b ), 
 // .. Step 2: Capitalize Substats
 		titlestr( %i0 ), 
 		., 
@@ -150,7 +161,7 @@ qr: results of f.statpath
 // -----------------------------------------------------------------------------
 // -- Statname Tests -----------------------------------------------------------
 
-think iter( iter( edit( a_b.c_d, _, %b ), capstr( ## ), ., .), capstr( ## ))
+think iter( iter( pedit( a_b.c_d, _, %b ), capstr( ## ), ., .), capstr( ## ))
 
 think statname( str )
 think statname( cont (dod).rep )
@@ -197,14 +208,14 @@ requires: isstaff(<dbref>)
 &f.getstat [v( d.sfp )]=
 	strcat( 
 		setq( p, u( .pmatch, before( before( %0, / ), : ))), 
-		setq( x, edit( trim( after( before( %0, / ), : )), %b, _ )), 
+		setq( x, pedit( trim( after( before( %0, / ), : )), %b, _ )), 
 		setq( s, rest( %0, / )), 
 
 		case( 0, 
 // the following may work without objeval(<wiz>, getstat(xx/yy))
 // [cor( isstaff( %@ ), strmatch( %qp, %# ))]
 			isstaff( %@ ), 
-			#-1 PERMISSION DENIED, 
+			#-1 PERMISSION DENIED Checking %@, 
 			t( %qp ), 
 			#-1 PLAYER NOT FOUND, 
 			t( setr( d, u( f.find-sheet, %qp ))), 
@@ -578,7 +589,7 @@ qv: matched value, if any
 // .. (like setstat.workhorse, make space -> '.')
 					list, 
 					strcat( 
-						setq( e, edit( %1, %b, . )), 
+						setq( e, pedit( %1, %b, . )), 
 						setq( x, 
 							iter( graball( %qe, !*, ., . ), 
 								![grab( .%qs, [rest( %i0, ! )]*, . )], 
@@ -749,7 +760,7 @@ qr: prerequisite checks
 
 // qx: sub-sheet name (with underscores)
 			setq( x, 
-				edit( 
+				pedit( 
 					trim( rest( first( %0, / ), : )), 
 					%b, _ 
 				)
@@ -858,7 +869,7 @@ qr: prerequisite checks
 // .. else: good! - pass target, statpath with underscores, value, offset
 				u( f.setstat.workhorse, 
 					%qw[if( t( %qx ), :%qx )], 
-					edit( %qs, %b, _ ), 
+					pedit( %qs, %b, _ ), 
 					%qv, 
 					%2 
 				)
@@ -964,10 +975,10 @@ qu: "un-add" these list items (for type:class only)
 // >> stat class is "list", set or un-set ( !value ) each item in list
 // .. list: right now, lists may be space-delimited, editing space to .
 			strmatch( %qc, list ), 
-			[setq( v, edit( %2, %b, . ))]
+			[setq( v, pedit( %2, %b, . ))]
 			[setq( u, graball( %qv, !*, ., . ))]
 			[setq( a, setdiff( %qv, %qu, . ))]
-			[setq( u, edit( %qu, !, ))]
+			[setq( u, pedit( %qu, !, ))]
 
 // .. .. list: qv: remove the remove stuff then add the add stuff
 			[setq( v, setunion( setdiff( %qd, %qu, . ), %qa, . ))]
@@ -1213,7 +1224,7 @@ qr: prerequisites check, 'template' and 'other' only
 
 // qx: sub-sheet name (with underscores)
 			setq( x, 
-				edit( 
+				pedit( 
 					trim( rest( first( %0, / ), : )), 
 					%b, _ 
 				)
@@ -1457,7 +1468,7 @@ late to change it now.
 			strcat( 
 				if( words( lattr( %1/_%2 )), #MAIN# ), |, 
 				iter( sort( lattr( %1/_*!%2 )), 
-					titlestr( edit( trim( first( %i0, ! ), _ ), _, %b )), 
+					titlestr( pedit( trim( first( %i0, ! ), _ ), _, %b )), 
 					, | 
 				)
 			), 
@@ -1475,7 +1486,7 @@ late to change it now.
 							first( %i0, ! )
 						), 
 					), 
-					titlestr( edit( first( %i0, ! ), _, %b )), 
+					titlestr( pedit( first( %i0, ! ), _, %b )), 
 					, | 
 				)
 			), 
@@ -1513,8 +1524,8 @@ late to change it now.
 // list 'other' sub-sheets values for this stat, if they exist
 			iter( %qo, 
 				strcat( 
-					titlestr( edit( rest( first( %i0, ! ), _ ), _, %b )), :, 
-					elements( %qv, inum(), | ) 
+					titlestr( pedit( rest( first( %i0, ! ), _ ), _, %b )), :, 
+					elementsmux( %qv, inum(), | ) 
 				), 
 				, | 
 			)
