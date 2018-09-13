@@ -319,7 +319,7 @@ I removed the nested edits, here. Rhost and TinyMUSH will choke here.
 
 */
 
-&f.sql.escape [v( d.xpas )]=edit( %0, \\, \\\\\\, ', \\\\', ", \\\\", \%, \\\\\\\% )
+&f.sql.escape [v( d.xpas )]=pedit( %0, \\, \\\\\\, ', \\\\', ", \\\\", \%, \\\\\\\% )
 
 /* -- test --
 
@@ -333,7 +333,7 @@ think u( v( d.xpas )/f.sql.escape, lit(She said, "Oh my god!". \\ I said, "Relax
 */ 
 
 &f.html.escape [v( d.xpas )]=
-	edit( edit( edit( edit( %0, &, &amp; ), %%, &#37; ), <, &lt; ), >, &gt; )
+	pedit( pedit( pedit( pedit( %0, &, &amp; ), %%, &#37; ), <, &lt; ), >, &gt; )
 
 
 /*
@@ -344,7 +344,7 @@ think u( v( d.xpas )/f.sql.escape, lit(She said, "Oh my god!". \\ I said, "Relax
 */
 
 &f.html.unescape [v( d.xpas )]=
-	edit( edit( edit( edit( %0, &#37;, %% ), &lt;, < ), &gt;, > ), &amp;, & )
+	pedit( pedit( pedit( pedit( %0, &#37;, %% ), &lt;, < ), &gt;, > ), &amp;, & )
 
 
 /*
@@ -476,7 +476,7 @@ A summary used for xp/log
 	WHERE target_objid='[u( .objid, %0 )]' 
 	AND xp_type='[lcstr( %1 )]' 
 	[if( strlen( %2 ), 
-		AND trait_name LIKE '[edit( %2, %b, _ )]%%%%'
+		AND trait_name LIKE '[pedit( %2, %b, _ )]%%%%'
 	)]
 
 
@@ -592,31 +592,15 @@ think u( v( d.xpas )/display.xp-and-beats.one-line, %!, normal )
 // --
 
 &display.approval-deets [v( d.xpas )]=
-	localize( strcat( 
+	 localize( strcat( 
 		setq( y, strmatch( %#, %0 )), 
 		setq( n, name( %0 )), 
 		setq( a, u( [v( d.cg )]/f.total_secs_approved, %0 )), 
 
-		if( %qy, You have, %qn has ), %b, 
-			been approved for, %b, 
-			exptime( %qa ), 
-			%r,
-		if( %qy, You are, %qn is ), %b, 
-			auto-gaining, %b, 
-			u( f.auto.beats.weekly, %0 ), %b, 
-			Normal Beats per week, %r, 
-		if( %qy, You have, %qn has ), %b, 
-			earned, %b, 
-			default( %0/_special.beats_earned.normal, 0 ), %b, 
-			out of, %b, 
-			u( f.weekly_beats.max_earnable, %0 ), %b, 
-			Normal Beats this week, %r, 
-		It will be reset in, %b, 
-			u( .plural, 
-				sub( 7, u( f.day_in_approval_week, %0 )), 
-				day, 
-				days 
-			), %r, 
+		[if( %qy, You have, %qn has )] been approved for [exptime( %qa )], %r,
+		[if( %qy, You are, %qn is )] auto-gaining [u( f.auto.beats.weekly, %0 )] Normal Beats per week, %r, 
+		[if( %qy, You have, %qn has )] earned [default( %0/_special.beats_earned.normal, 0 )] out of [u( f.weekly_beats.max_earnable, %0 )] Normal Beats this week, %r, 
+		It will be reset in [u( .plural, sub( 7, u( f.day_in_approval_week, %0 )), day, days )], %r
 	))
 
 think u( v( d.xpas )/display.approval-deets, %! )
@@ -732,7 +716,7 @@ l: log sql results
 		processed xp type:, %b, 
 		setr( e, 
 			grab( 
-				normal|[edit( v( d.xp_types ), %b, | )], 
+				normal|[pedit( v( d.xp_types ), %b, | )], 
 				trim( %qx* ), 
 				| 
 			)
@@ -741,7 +725,7 @@ l: log sql results
 		processed log type:, %b, 
 		setr( g, 
 			grab( 
-				|[edit( v( d.log_types ), %b, | )], 
+				|[pedit( v( d.log_types ), %b, | )], 
 				rest( trim( %2* ), / ), 
 				| 
 			)
@@ -817,7 +801,7 @@ z: xp amount (xp type)
         * extra switches (%2) ignored for now *, %r, 
         * xp log for entry '%1' *, %r, 
         log:, %b, setr( l, sql( u( sql.select.entry_num, %1 ), `, | )), %r, 
-        target's dbref:, %b, setr( t, first( elements( %ql, 3, | ), : )), %r, 
+        target's dbref:, %b, setr( t, first( elementsmux( %ql, 3, | ), : )), %r, 
     ); 
 
     @break eq( words( %ql, ` ), 0 )={ 
@@ -840,33 +824,33 @@ z: xp amount (xp type)
         enactor's display width:, %b, setr( w, width( %0 )), %r 
         * format data for display *, %r, 
         enactor (dbref):, %b, setr( e, strcat( 
-            elements( %ql, 2, | ), %b, 
-            %(, first( elements( %ql, 1, | ), : ), %) 
+            elementsmux( %ql, 2, | ), %b, 
+            %(, first( elementsmux( %ql, 1, | ), : ), %) 
         )), %r, 
         target (dbref):, %b, setr( t, strcat( 
-            elements( %ql, 4, | ), %b, %(, %qt, %) 
+            elementsmux( %ql, 4, | ), %b, %(, %qt, %) 
         )), %r, 
-        timestamp:, %b, setr( x, elements( %ql, 5, | )), %r, 
-        action:, %b, setr( a, elements( %ql, 7, | )), 
-        reason:, %b, setr( r, elements( %ql, 8, | )), 
-        trait type:, %b, setr( y, titlestr( elements( %ql, 9, | ))), %r, 
+        timestamp:, %b, setr( x, elementsmux( %ql, 5, | )), %r, 
+        action:, %b, setr( a, elementsmux( %ql, 7, | )), 
+        reason:, %b, setr( r, elementsmux( %ql, 8, | )), 
+        trait type:, %b, setr( y, titlestr( elementsmux( %ql, 9, | ))), %r, 
         trait name -> 'value':, %b, setr( n, strcat( 
-            statname( elements( %ql, 10, | )), %b, %[, %qy, %], 
-			%b', elements( %ql, 13, | ) ,' -> ', elements( %ql, 11, | ), ' 
+            statname( elementsmux( %ql, 10, | )), %b, %[, %qy, %], 
+			%b', elementsmux( %ql, 13, | ) ,' -> ', elementsmux( %ql, 11, | ), ' 
         )), %r, 
 		xp amt & type:, %b, 
 			setr( z, 
 //				if( not( strmatch( %qa, freebie )), 
-				if( t( elements( %ql, 6, | )), 
+				if( t( elementsmux( %ql, 6, | )), 
 					strcat( 
-						setq( z, elements( %ql, 12, | )), 
+						setq( z, elementsmux( %ql, 12, | )), 
 						setq( z, 
 							if( not( strmatch( %qz, normal )), 
 								[capstr( %qz )]%b 
 							)
 						), 
 						u( .plural, 
-							fdiv( elements( %ql, 6, | ), v( d.beat-to-exp )), 
+							fdiv( elementsmux( %ql, 6, | ), v( d.beat-to-exp )), 
 							%qzExperience, %qzExperiences 
 						)
 					)
@@ -909,29 +893,29 @@ output: entry_num|who|when|amt|reason or stat -> 'value'|entry_num
 &format.xp/log.one-line [v( d.xpas )]=
   strcat( 
 // entry_num
-		elements( %0, 1, | ), |, 
+		elementsmux( %0, 1, | ), |, 
 // who
-		elements( %0, 3, | ), %b, %(, first( elements( %0, 2, | ), : ), %), |, 
+		elementsmux( %0, 3, | ), %b, %(, first( elementsmux( %0, 2, | ), : ), %), |, 
 // when
 		timefmt( $m/$d/$g,  
-			u( f.time.sql2unix, elements( %0, 4, | ))
+			u( f.time.sql2unix, elementsmux( %0, 4, | ))
 		), |, 
 // amt
-		case( elements( %0, 6, | ), 
+		case( elementsmux( %0, 6, | ), 
 			spend, -, 
 			freebie, -, 
 			unaward, - 
 		), 
-		trim( fdiv( floor( elements( %0, 5, | )), v( d.beat-to-exp )), l, 0 ), 
+		trim( fdiv( floor( elementsmux( %0, 5, | )), v( d.beat-to-exp )), l, 0 ), 
 		|, 
 // reason or stat -> 'value'
-		if( strlen( elements( %0, 8, | )), 
+		if( strlen( elementsmux( %0, 8, | )), 
 			strcat( 
-				statname( elements( %0, 8, | )), 
-				%b, ->, %b, ', elements( %0, 9, | ), ' 
+				statname( elementsmux( %0, 8, | )), 
+				%b, ->, %b, ', elementsmux( %0, 9, | ), ' 
 			), 
 			strcat( 
-				elements( %0, 7, | )
+				elementsmux( %0, 7, | )
 			)
 		), 
 	)
@@ -963,11 +947,11 @@ Reason & Entered By are flexible to the viewer's screen width.
 &display.xp/log.one-line [v( d.xpas )]=
 	localize( strcat( 
 		setq( w, sub( width( %# ), 80 )), 
-		rjust( elements( %0, 4, | ), 5 ), %b%b, 
-		ljust( elements( %0, 5, | ), add( 27, ceil( fdiv( %qw, 2 ))) ), %b%b, 
-		ljust( elements( %0, 2, | ), add( 20, floor( fdiv( %qw, 2 ))) ), %b,
-		ljust( elements( %0, 3, | ), 10 ), %b, 
-		rjust( elements( %0, 1, | ), 9 )
+		rjust( elementsmux( %0, 4, | ), 5 ), %b%b, 
+		ljust( elementsmux( %0, 5, | ), add( 27, ceil( fdiv( %qw, 2 ))) ), %b%b, 
+		ljust( elementsmux( %0, 2, | ), add( 20, floor( fdiv( %qw, 2 ))) ), %b,
+		ljust( elementsmux( %0, 3, | ), 10 ), %b, 
+		rjust( elementsmux( %0, 1, | ), 9 )
 	))
 
 
@@ -1206,7 +1190,7 @@ If you'd like to use this, run the code below:
 &d.restricted.stats [v( d.xpas )]=
 	cat( 
 		iter( lattr( %!/d.restricted.stats.*, u( %i0 ))), 
-		edit( 
+		pedit( 
 			filter( 
 				v( d.sfp )/f.hastag?.workhorse, 
 				lattr( v( d.dd )/merit.* ), , , 
@@ -2124,16 +2108,16 @@ v: chargen's stat validation
 			capstr( lcstr( rest( first( %qv, . )))), 
 
 // .. chargen check failed
-			t( elements( %qv, 2, . )), 
+			t( elementsmux( %qv, 2, . )), 
 			Can't set the stat outside character generation, 
 
 // .. template check failed
-			t( elements( %qv, 3, . )), 
+			t( elementsmux( %qv, 3, . )), 
 			Stat cannot be taken by your template, 
 
 // .. prerequisites check failed
-			t( elements( %qv, 4, . )), 
-			rest( elements( %qv, 4, . ))
+			t( elementsmux( %qv, 4, . )), 
+			rest( elementsmux( %qv, 4, . ))
 		)
 	))
 
@@ -2299,7 +2283,7 @@ ELDRITCH HOUSE-RULE: Numeric traits of 4+ are also restricted
 &f.day_in_approval_week [v( d.xpas )]=
 	localize( strcat( 
 		setq( a, grab( revwords( get( %0/_approval.log ), | ), approved:*, | )), 
-		setq( a, elements( %qa, 2, : )), 
+		setq( a, elementsmux( %qa, 2, : )), 
 		mod( idiv( sub( secs( ), %qa ), v( d.one-day )), 7 )
 	))
 
@@ -2346,8 +2330,8 @@ ELDRITCH HOUSE-RULE: Numeric traits of 4+ are also restricted
 
 
 	
-
-@daily [v( d.xpas )]=
+th @@( Please see below! Needs CRON! )
+&daily [v( d.xpas )]=
 	@trigger %!/trig.daily.xp; 
 	@trigger %!/trig.weekly.reset; 
 
@@ -2356,6 +2340,14 @@ ELDRITCH HOUSE-RULE: Numeric traits of 4+ are also restricted
 /* 
 ================================================================================
 == AUTO: ADD DAILY XP ==========================================================
+
+Please note: Due to a lack of @daily on Rhost, I've set up a "daily" job on cron.
+It looks like this:
+
+&CRON_TIME_DAILY Globals: CRON - Myrddin's=|||02|14|
+&CRON_JOB_DAILY Globals: CRON - Myrddin's=@dol [v( jobs_daily )]=@trigger ##
+&JOBS_DAILY Globals: CRON - Myrddin's=#94/daily
+
 
 Go through everyone and do the thing.
 
@@ -2492,7 +2484,7 @@ Total time active:
 &f.at_weeks_end? xxx=
 	localize( strcat( 
 		setq( a, grab( revwords( get( %0/_approval.log ), | ), approved:*, | )), 
-		setq( a, elements( %qa, 2, : )), 
+		setq( a, elementsmux( %qa, 2, : )), 
 
 		eq( 
 			mod( idiv( sub( secs( ), %qa ), v( d.one-day )), 7 ), 
