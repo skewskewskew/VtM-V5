@@ -144,7 +144,7 @@ for one reason or another, no longer is.
 		), 
 
 		case( %qs, 
-			@@( null ), 
+			@@( null )( null ), 
 			cor( 
 				isstaff( %qp ), 
 				hasflag( %qp, approved ), 
@@ -492,7 +492,7 @@ cg/log
 			), 
 			approval status is:, 
 			if( t( %qs ), 
-				titlestr( edit( %qs, _, %b )), 
+				titlestr( pedit( %qs, _, %b )), 
 				Error %(%qs%) 
 			)
 		)
@@ -655,14 +655,14 @@ returns: number of seconds
 	localize( 
 		strcat( 
 			setq( a, get( %0/_approval.log )), 
-			setq( l, iter( %qa, elements( %i0, 2, : ), | )), 
+			setq( l, iter( %qa, elementsmux( %i0, 2, : ), | )), 
 			setq( l, if( t( %qa ), cat( %ql, secs( )))), 
 			setq( a, matchall( %qa, approved:*, |  )), 
 
 			ladd( 
 				iter( 
 					%qa, 
-					sub( elements( %ql, inc( %i0 )), elements( %ql, %i0 ))
+					sub( elementsmux( %ql, inc( %i0 )), elementsmux( %ql, %i0 ))
 				)
 			)
 		)
@@ -726,14 +726,14 @@ returns: number of seconds
 &display.approval.log [v( d.cg )]=
 	localize( strcat( 
 		setq( a, 
-			lmax( iter( %2, strlen( elements( %i0, 1, : )), | ))
+			lmax( iter( %2, strlen( elementsmux( %i0, 1, : )), | ))
 		), 
 
 		setq( t, 
 			lmax( 
 				iter( %2, 
 					strlen( 
-						u( format.approval.timestamp, elements( %i0, 2, : ))
+						u( format.approval.timestamp, elementsmux( %i0, 2, : ))
 					), 
 					| 
 				)
@@ -743,8 +743,8 @@ returns: number of seconds
 		setq( s, 
 			lmax( iter( %2, 
 				add( 
-					strlen( elements( %i0, 3, : )), 
-					strlen( elements( %i0, 4, : )), 
+					strlen( elementsmux( %i0, 3, : )), 
+					strlen( elementsmux( %i0, 4, : )), 
 					3, // for '%b()'
 				), 
 				| 
@@ -756,9 +756,9 @@ returns: number of seconds
 			wrap( 
 				u( format.approval.log.line, %i0, %qa, %qt, %qs, * ), 
 				width( %0 ), 
-				@@( just ), 
-				@@( lefttext ), 
-				@@( righttext ), 
+				@@( null )( just ), 
+				@@( null )( lefttext ), 
+				@@( null )( righttext ), 
 				add( %qa, %qt, %qs, 9 )
 			), 
 			|, %r 
@@ -777,13 +777,13 @@ returns: number of seconds
 
 &format.approval.log.line [v( d.cg )]=
 	cat( 
-		ljust( titlestr( edit( elements( %0, 1, : ), _, %b )), %1 ), %b, 
-		ljust( u( format.approval.timestamp, elements( %0, 2, : )), %2 ), %b, 
+		ljust( titlestr( pedit( elementsmux( %0, 1, : ), _, %b )), %1 ), %b, 
+		ljust( u( format.approval.timestamp, elementsmux( %0, 2, : )), %2 ), %b, 
 		ljust( 
-			[elements( %0, 3, : )] %([elements( %0, 4, : )]%), 
+			[elementsmux( %0, 3, : )] %([elementsmux( %0, 4, : )]%), 
 			%3 
 		), %b, 
-		trim( rest( elements( %0, 5, : ), %, ))
+		trim( rest( elementsmux( %0, 5, : ), %, ))
 	)
 
 
@@ -866,6 +866,10 @@ All commands have the leading '+' as an option. No harm if you use it.
 ################################################################################
 ## CG/SUBMIT ###################################################################
 
+
+THIS IS BEING commented out for now. Why? Because JRS is designed to work with
+anomoly job system, which is not the default on Rhost. TO BE CONTINUED...
+
 This is an add-on to the Jobs Request System (found in a very different file).
 
 When someone is convinced that they are ready for approval, they will type 
@@ -877,7 +881,6 @@ Neither of these systems run 'cg/check'! It's up to staff to do it right!
 
 The rest is about dancing.
 
-*/
 
 @fo me=&d.jrs me=[search( name=Jobs Request System <jrs> )]
 
@@ -929,3 +932,4 @@ think u( [v( d.jrs )]/d.content.cg/submit )
 
 &d.cgsubmit.prefix [v( d.jrs )]=CGEN
 
+*/
