@@ -48,7 +48,7 @@ This is the biggie
 
 // Get starting damages, numeric value of dmg type being done
 	[iter( u( d.health-types ), 
-		setq( inum( 0 ), elementsmux( %qh, inum( 0 ))), , @@ 
+		setq( inum( 0 ), elementsmux( %qh, inum( 0 ))), , @@() 
 	)]
 
 // Simple Damage: ADD
@@ -69,7 +69,7 @@ This is the biggie
 			u( f.do-some-dmg.push ), 
 // .. .. type done <= min type have: WRAP
 			u( f.do-some-dmg.wrap )
-		)], , @@ 
+		)], , @@() 
 	)]
 
 // Output results as sent in: Bashing Lethal Aggravated
