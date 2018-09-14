@@ -51,7 +51,7 @@ system.
 */
 
 @create Pool Spend Regain System <psrs>
-@set Pool Spend Regain System <psrs>=safe inherit
+@set Pool Spend Regain System <psrs>=safe inherit sidefx
 @fo me=&d.psrs me=[search( name=Pool Spend Regain System <psrs> )]
 
 @parent Pool Spend Regain System <psrs>=codp
@@ -104,10 +104,10 @@ system.
 
 	@assert hasattr( %!, spend.trigger.%qw )={ 
 		@pemit %#=u( .msg, spend, 
-			I don't know how to spend '[edit( %qw, _, %b )]'. 
+			I don't know how to spend '[pedit( %qw, _, %b )]'. 
 			I know: 
 			[itemize( 
-				edit( lcstr( lattr( %!/spend.trigger.* )), spend.trigger., )
+				pedit( lcstr( lattr( %!/spend.trigger.* )), spend.trigger., )
 			)]
 		); 
 	}; 
@@ -147,10 +147,10 @@ system.
 
 	@assert hasattr( %!, regain.trigger.%qw )={ 
 		@pemit %#=u( .msg, regain, 
-			I don't know how to regain '[edit( %qw, _, %b )]'. 
+			I don't know how to regain '[pedit( %qw, _, %b )]'. 
 			I know: 
 			[itemize( 
-				edit( lcstr( lattr( %!/regain.trigger.* )), regain.trigger., )
+				pedit( lcstr( lattr( %!/regain.trigger.* )), regain.trigger., )
 			)]
 		); 
 	}; 
@@ -237,7 +237,7 @@ Passed to all of these:
 
 
 &regain.methods.willpower [v( d.psrs )]=|all|rest
-// &regain.methods.willpower.demon [v( d.psrs )]=[@@( an example )]
+// &regain.methods.willpower.demon [v( d.psrs )]=[@@( null )( an example )]
 
 
 // 0: target -- 1: spend/regain -- 2: stat -- 3: method/amt
@@ -408,7 +408,7 @@ COMMAND[/<switches>] [<target>/]<stat>[=<input>] [for <reason>]
 		s:, %b, setr( s, trim( %0 )), %r, 
 		i:, %b, setr( i, trim( before( after( %1, = ), %bfor%b ))), %r, 
 		r:, %b, setr( r, trim( after( %1, %bfor%b ))), %r, 
-		setq( w, edit( trim( before( before( %1, %bfor%b ), = )), %b, _ )), 
+		setq( w, pedit( trim( before( before( %1, %bfor%b ), = )), %b, _ )), 
 		t:, %b, setr( t, if( strlen( rest( %qw, / )), first( %qw, / ), %# )), 
 		%r, 
 		p:, %b, setr( p, pmatch( %qt )), %r, 
