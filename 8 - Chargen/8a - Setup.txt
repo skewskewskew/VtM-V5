@@ -113,7 +113,7 @@ List of stats on a sheet, based on passed tags
 		[v( d.sfp )]/fil.list-stats-tags, 
 // .. lazy, so turning "_sheet.statpath" into "sheet.statpath" 
 // .. so we can use the filter for non-sheet matches
-		rest( edit( lattr( %0/_%1.* ), %b_, %b ), _ ), 
+		rest( pedit( lattr( %0/_%1.* ), %b_, %b ), _ ), 
 		, 
 		, 
 		%2, 
