@@ -34,7 +34,7 @@ q9: target list (dbrefs or job #)
 // .. sanitize input and detach the instance
 // .. (don't need to worry if instance already detached; extra spaces are fine)
 			setq( 7, 
-				squish( edit( 
+				squish( pedit( 
 					strip( %2, %%%,;<>%[%] ), 
 					%(, %b%( 
 				))
@@ -145,7 +145,7 @@ so we clear out all the globals (and "p"?!) before we start
 		setq( d, ), setq( a, ), setq( e, ), setq( o, ), setq( s, ), setq( z, ), 
 		setq( r, ), setq( p, ), setq( t, ), setq( n, ), 
 
-		setq( 0, squish( edit( strip( %0, %%%,;<>%[%] ), %(, %b%( ))), 
+		setq( 0, squish( pedit( strip( %0, %%%,;<>%[%] ), %(, %b%( ))), 
 		setq( 1, u( [u(d.stat-setter)]/f.find-sheet, pmatch( %1 ))), 
 		setq( 2, if( words( trim( %2, l, / ), / ), /[trim( %2, l, / )])), 
 
@@ -197,12 +197,12 @@ may be ignored if internal: items kept in global registers!
 // .. scan for and run "active" switches
 		iter(
 //			again weakness extended target willpower, 
-			edit( lcstr( lattr( %!/f.roll/* )), f.roll/, ), 
+			pedit( lcstr( lattr( %!/f.roll/* )), f.roll/, ), 
 			if( 
 				u( f.hasswitch?, %i0 ), 
 				u( f.roll/%i0, u( f.getswitch, %i0 ), %# )
 			), 
-			, @@ 
+			, @@( null )
 		), 
 
 // .. last, check for health penalty
