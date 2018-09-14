@@ -252,7 +252,9 @@ think u( v( d.sheet )/block.attributes, %# )
 
 // =--=-=-=-=-=-=-=
 
-&display.subheader [v( d.nsc )]=center( %b%1%b, %0, %xh%xx.%xn )
+&display.subheader [v( d.nsc )]=printf($^%0:%xh%xx.%xn:s,%1)
+
+// center( %b%1%b, %0, %xh%xx.%xn )
 
 // -==--=-=-=-==-=-=-
 
