@@ -248,7 +248,7 @@ We need to make sure that the sheet display code knows how to do this too.
 
 &merits.default [v( d.nsc )]=
 	iter( 
-		filter( fil.subtraits, sort( edit( lattr( %0/_merit.* ), _MERIT., ))), 
+		filter( fil.subtraits, sort( pedit( lattr( %0/_merit.* ), _MERIT., ))), 
 		case( ulocal( v( d.sfp )/f.get-class, merit.%i0 ), 
 			list, ulocal( f.cheat_getstat.with_name, %0, merit.%i0, list ), 
 			ulocal( f.cheat_getstat.trait-n-subtrait, %0, %i0, merit )
@@ -347,7 +347,7 @@ Grab the power pool name for the passed sheet's template
 &traits.power_pool [v( d.nsc )]=
 	ulocal( f.cheat_getstat.pool, 
 		%0, 
-		elements( 
+		elementsmux( 
 			filter( 
 				v( d.sfp )/fil.list-stats-tags, 
 				lattr( v( d.dd )/advantage.* ), , ., 
