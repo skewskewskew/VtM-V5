@@ -1,5 +1,8 @@
 
 @create Sheet: Rows
+
+@fo me=&d.sheet me=[num( Sheet: Rows )]
+
 @set [v( d.sheet )]=inherit safe
 @fo me=@parent [v( d.sheet )]=[v( d.nsc )]
 
@@ -39,8 +42,8 @@ think u( v( d.nsc )/bio.default, %# )
 		), 
 		setq( r, floor( fdiv( setr( c, words( %qb, | )), 2 ))), 
 		vcolumns( 
-			%qw:[elements( %qb, lnum( 1, %qr ), |, | )], 
-			%qw:[elements( %qb, lnum( inc( %qr ), %qc ), |, | )], 
+			%qw:[elementsmux( %qb, lnum( 1, %qr ), |, | )], 
+			%qw:[elementsmux( %qb, lnum( inc( %qr ), %qc ), |, | )], 
 			|, 
 			%b 
 		)
@@ -157,7 +160,7 @@ m: normal 'max' for pool
 		setq( m, first( %1, . )), 
 		ladd( %0, . ), 
 		if( cor( neq( %qc, %qo ), neq( %qo, %qm )), 
-			edit( 
+			pedit( 
 				strcat( 
 					%b%(, 
 					if( neq( %qc, %qo ), out of %qo%b ), 
@@ -373,7 +376,7 @@ think u( v( d.sheet )/block.traits, %# )
 					setq( c, 
 						ulocal( 
 							v( d.sfp )/f.get-class, 
-							merit.[edit( first( %i0, : ), %b, _ )] 
+							merit.[pedit( first( %i0, : ), %b, _ )] 
 						)
 					), 
 					u( display.trait-and-value, %i0, %qt, %qw, %qc, . )
@@ -409,7 +412,7 @@ think u( v( d.sheet )/block.merits, %# )
 			)
 		), 
 		divider( Advantages ), %r, 
-		columns( 
+		column( 
 			%qa, 
 			%qw, 
 			|
@@ -496,3 +499,4 @@ think u( v( d.sheet )/display.sheet, %#, %#, get( %#/_bio.template ))
 
 // =--=-==--==-=-=--==-=-
 
+@fo me=@tel [v( d.sheet )]=[v( d.nsc )]
