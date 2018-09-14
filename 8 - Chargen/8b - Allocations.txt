@@ -101,7 +101,7 @@ Returns full stat paths.  The first part of the list are specialties that are no
 				setq( s, remove( %qs, %i0 ))
 			), 
 			`, 
-			@@
+			@@( null )
 		), 
 		%qs[if( strlen( %qf ), `%qf )]
 	)
@@ -119,7 +119,7 @@ think u( v( d.cg )/f.allocated.specialties, pmatch( hemi ))
 Humans themselves don't get additional specialties, so as a reminder:
 */
 
-&f.allocated.specialties.human [v( d.cg )]=@@( nothing )
+&f.allocated.specialties.human [v( d.cg )]=@@( null )( nothing )
 
 
 /*
