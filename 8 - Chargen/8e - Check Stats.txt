@@ -84,7 +84,7 @@ think u( v( d.cg )/f.statcheck, %#, _merit.medium, 2 )
 think u( v( d.cg )/f.statcheck, %#, _merit.etiquette )
 think u( v( d.cg )/f.statcheck, %#, _merit.unseen_sense_(wyrd), 3 )
 
-think u( v( d.cg )/f.statcheck.normal, _merit.etiquette, merit.etiquette, 1, @@(null) )
+think u( v( d.cg )/f.statcheck.normal, _merit.etiquette, merit.etiquette, 1, @@( null )(null) )
 
 think u( v( d.cg )/f.statcheck, %#, _skill.flubber )
 
@@ -130,7 +130,7 @@ v: value to check (if %3, then do a dance for num/non-num)
 
 // .. instance is there: process
 				strcat( 
-					setq( i, edit( strip( rest( %0, %( ), %) ), _, %b )), 
+					setq( i, pedit( strip( rest( %0, %( ), %) ), _, %b )), 
 					setq( d, extract( get( [u( d.dd )]/%1 ), 2, 1, | )), 
 					case( 1, 
 						t( member( %qd, * )), 1, 
@@ -169,7 +169,7 @@ v: value to check (if %3, then do a dance for num/non-num)
 
 /* -- test --
 
-think u( v( d.cg )/f.statcheck.normal, _merit.etiquette, merit.etiquette, 1, @@(null) )
+think u( v( d.cg )/f.statcheck.normal, _merit.etiquette, merit.etiquette, 1, @@( null )(null) )
 
 think u( v( d.cg )/f.statcheck.normal, _merit.unseen_sense_(god_machine), merit.unseen_sense_(), , 3 )
 
@@ -257,7 +257,7 @@ t: temp whatsit
 		case( 1, 
 
 			not( cand( 
-				isint( setr( t, first( u( %0/[elements( %1, 1 2, . )] ), . ))), 
+				isint( setr( t, first( u( %0/[elementsmux( %1, 1 2, . )] ), . ))), 
 				gt( %qt, 0 )
 			)), 
 			if( strmatch( %1, _skill.* ), 
@@ -303,7 +303,7 @@ Class:List stats are checked similarly to other types, but each element
 // .. .. sheet stats +
 					%1, 
 // .. .. stat to add
-					edit( %2, %b, . ), 
+					pedit( %2, %b, . ), 
 					.
 				), 
 				.
@@ -451,7 +451,7 @@ b: badstat list
 &display.cgen_stamp [v( d.cg )]=
 	cat( 
 		%b Chargen Approval Stamp:, 
-		elements( rest( setr( z, u( %0/_cgstamp )), | ), 2 3 5 ), 
+		elementsmux( rest( setr( z, u( %0/_cgstamp )), | ), 2 3 5 ), 
 		by, 
 		rest( first( %qz, | ), Approved by%b )
 	)
@@ -488,7 +488,7 @@ q1: column`1`list
 q2: column`2`list
 i: item from sheet
 
-uses: vcolumns(), our vertical-column system
+uses: vcolumn(), our vertical-column system
 
 */
 
@@ -511,7 +511,7 @@ uses: vcolumns(), our vertical-column system
 				iter( 
 					full_name birthdate, 
 					strcat( 
-						ansi( h, titlestr( edit( %i0, _, %b ))), :, %b, 
+						ansi( h, titlestr( pedit( %i0, _, %b ))), :, %b, 
 						setr( i, u( %1/_bio.%i0 )), %b, 
 						u( display.check.ok-no, comp( %qi, ))
 					), 
@@ -528,7 +528,7 @@ uses: vcolumns(), our vertical-column system
 					udefault( check.bio.%2, u( check.bio.default ), %1 )
 				), 
 				strcat( 
-					ansi( h, titlestr( edit( %i0, _, %b ))), :, %b, 
+					ansi( h, titlestr( pedit( %i0, _, %b ))), :, %b, 
 					setr( i, u( %1/_bio.%i0 )), %b, 
 					u( display.check.ok-no, comp( %qi, ))
 				), 
@@ -538,7 +538,7 @@ uses: vcolumns(), our vertical-column system
 
 // >> display results
 		divider( Biography Check, width( %# )), %r, 
-		vcolumns( 38:%q1, 37:%q2, `, %b, %b%b )
+		vcolumn( 38:%q1, 37:%q2, `, %b, %b%b )
 	)
 
 
@@ -680,21 +680,21 @@ Prettifies the output for the Werewolf specialties.
 	strcat( 
 // .. changeling
 		%b Changeling -%b, 
-		iter( elements( %0, 1, ` ), 
+		iter( elementsmux( %0, 1, ` ), 
 			u( u( d.sfp )/f.statname-workhorse, rest( %i0, . )), 
 			, %,%b 
 		), 
 
 // .. seeming
-		if( strlen( elements( %0, 2, ` ), %r%b Seeming-%b)), 
-		iter( elements( %0, 2, ` ), 
+		if( strlen( elementsmux( %0, 2, ` ), %r%b Seeming-%b)), 
+		iter( elementsmux( %0, 2, ` ), 
 			u( u( d.sfp )/f.statname-workhorse, rest( %i0, . )), 
 			, %,%b 
 		), 
 
 // .. kith(s)
-		if( strlen( elements( %0, 3, ` ), %r%b Kith-%b)), 
-		iter( elements( %0, 3, ` ), 
+		if( strlen( elementsmux( %0, 3, ` ), %r%b Kith-%b)), 
+		iter( elementsmux( %0, 3, ` ), 
 			u( u( d.sfp )/f.statname-workhorse, rest( %i0, . )), 
 			, %,%b 
 		)
@@ -764,7 +764,7 @@ More examples
 								if( not( %i0 ), 
 									[titlestr( rest( %i0 ))]| 
 								), 
-								., @@ 
+								., @@( null ) 
 							), 
 							b, | 
 						), 
