@@ -40,17 +40,17 @@ q9: target list (dbrefs or job #)
 				))
 			), 
 
-// .. run the workhorse
+// .. run the workhorse ->  4|6|1 1 8 10 5 9::9
 // .. (remove 'blind' switch, as that is for the 'build to-list' only)
 			null( 
 				u( f.roll.workhorse, 
 					%q7, 
 					%#, 
-					remove( %1, blind, /, / )
+					remove( %1, blind, / )
 				)
 			), 
-
-// .. build the to-list
+// 
+// .. build the to-list -> public|#80 #74
 			setq( 9, u( f.build.to-list, %#, trim( rest( %3, = )), %1 )), 
 
 // .. interpret and output - check for errors first
@@ -62,7 +62,7 @@ q9: target list (dbrefs or job #)
 			)
 		)
 
-// --
+// -- u( display.roll-to-public, %#, #80 #74))
 
 @set v( d.nr )/c.roll=regex
 
@@ -142,8 +142,8 @@ so we clear out all the globals (and "p"?!) before we start
 
 &f.roll [v( d.nr )]=
 	strcat( 
-		setq( d, ), setq( a, ), setq( e, ), setq( o, ), setq( s, ), setq( z, ), 
-		setq( r, ), setq( p, ), setq( t, ), setq( n, ), 
+		[setq( d, )][setq( a, )][setq( e, )][setq( o, )][setq( s, )][setq( z, )]
+		[setq( r, )][setq( p, )][setq( t, )][setq( n, )], 
 
 		setq( 0, squish( pedit( strip( %0, %%%,;<>%[%] ), %(, %b%( ))), 
 		setq( 1, u( [u(d.stat-setter)]/f.find-sheet, pmatch( %1 ))), 
@@ -182,13 +182,13 @@ may be ignored if internal: items kept in global registers!
 &f.roll.workhorse [v( d.nr )]=
 	strcat( 
 // .. set up global register defaults
-		setq( z, u( f.switch.name-complete, %2 )), 
-		setq( d, 0 ), 
-		setq( a, 10 ), 
-		setq( n, 0 ), 
-		setq( t, ), 
-		setq( c, ), 
-		setq( s, Standard ), 
+		[setq( z, u( f.switch.name-complete, %2 ))]
+		[setq( d, 0 )]
+		[setq( a, 10 )]
+		[setq( n, 0 )]
+		[setq( t, )]
+		[setq( c, )]
+		[setq( s, Standard )], 
 		
 // .. run the basic roller setup
 		u( f.stat-check.stats, %1, %0 ), 
