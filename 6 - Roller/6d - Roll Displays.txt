@@ -238,6 +238,11 @@ Give it that '(<dice rolled)' look.
 /*
 --------------------------------------------------------------------------------
 -- Display: Roll To Public -----------------------------------------------------
+
+Sample input: u( display.roll-to-public, %#, #80 #74))
+
+Output: u( display.roll-output, #74, public, #74  )
+
 */
 
 &display.roll-to-public [v( d.nr )]=
@@ -245,7 +250,6 @@ Give it that '(<dice rolled)' look.
 		pemit( %i0, u( display.roll-output, %0, public, %i0  )), 
 		, @@( null )
 	)
-
 
 /*
 --------------------------------------------------------------------------------
