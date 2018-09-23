@@ -144,7 +144,7 @@ for one reason or another, no longer is.
 		), 
 
 		case( %qs, 
-			@@( null )( null ), 
+			@@( null ), 
 			cor( 
 				isstaff( %qp ), 
 				hasflag( %qp, approved ), 
@@ -153,22 +153,42 @@ for one reason or another, no longer is.
 			), 
 
 			approved, 
-			isapproved( %qp ), 
+      cor( 
+				isstaff( %qp ), 
+				hasflag( %qp, approved ), 
+				hasflag( %qp, npc ), 
+				hasflag( %qp, storyteller )
+			), 
 
 			staff, 
 			isstaff( %qp ), 
 
 			frozen, 
-			cand( not( isapproved( %qp )), hasattr( %qp, _approval.frozen )), 
+			cand( 
+        not( 
+          cor( 
+            isstaff( %qp ), 
+            hasflag( %qp, approved ), 
+            hasflag( %qp, npc ), 
+            hasflag( %qp, storyteller )
+            )), 
+        hasattr( %qp, _approval.frozen )), 
 
 			dead, 
-			cand( not( isapproved( %qp )), hasattr( %qp, _approval.dead )), 
+			cand( not( 
+            cor( 
+            isstaff( %qp ), 
+            hasflag( %qp, approved ), 
+            hasflag( %qp, npc ), 
+            hasflag( %qp, storyteller )
+            )), 
+          hasattr( %qp, _approval.dead )), 
 			
 			chargen, 
 			cor( 
 				isstaff( %qp ), 
 				not( cor( 
-					isapproved( %qp ), 
+          hasflag( %qp, approved ),
 					hasflag( %qp, unapproved ), 
 					haspower( %qp, guest ), 
 					strmatch( %qp, config( guest_char_num ))
@@ -199,9 +219,7 @@ for one reason or another, no longer is.
 			hasflag( %qp, %qs )
 		)
 	)
-
-
-
+	
 /* 
 ================================================================================
 == COMMANDS & SWITCHES =========================================================
