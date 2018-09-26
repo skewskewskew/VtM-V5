@@ -90,7 +90,7 @@ Returns full stat paths.  The first part of the list are specialties that are no
 &f.allocated.specialties [v( d.cg )]=
 	strcat( 
 		setq( l, 
-			ulocal( f.list-stats-tags, %0, skill, mental.physical.social, or )
+			ulocal( [v( d.sfp )]/f.list-stats-tags, %0, skill, mental.physical.social, or )
 		), 
 		setq( s, iter( %ql, lattr( %0/_%i0.* ))), 
 		setq( t, u( %0/_bio.template )), 
@@ -101,7 +101,7 @@ Returns full stat paths.  The first part of the list are specialties that are no
 				setq( s, remove( %qs, %i0 ))
 			), 
 			`, 
-			@@( null )
+
 		), 
 		%qs[if( strlen( %qf ), `%qf )]
 	)
@@ -119,7 +119,7 @@ think u( v( d.cg )/f.allocated.specialties, pmatch( hemi ))
 Humans themselves don't get additional specialties, so as a reminder:
 */
 
-&f.allocated.specialties.human [v( d.cg )]=@@( null )( nothing )
+&f.allocated.specialties.human [v( d.cg )]=@@( null )
 
 
 /*
@@ -133,11 +133,13 @@ Outputs: <number of short term>/<number of long-term>
 
 */
 
+
+
 &f.allocated.aspirations [v( d.cg )]=
 	localize( strcat( 
-		setq( a, u( v( d.asp )/f.get.aspirations.status, %0, pitched )), 
-		setq( s, filter( v( d.asp )/filter.term, %qa, , , short-term )), 
-		setq( l, filter( v( d.asp )/filter.term, %qa, , , long-term )), 
+		setq( a, u( [v( d.asp )]/f.get.aspirations.status, %0, pitched )), 
+		setq( s, filter( [v( d.asp )]/filter.term, %qa, , , %0, short-term )), 
+		setq( l, filter( [v( d.asp )]/filter.term, %qa, , , %0, long-term )), 
 
 		words( %qs ), /, words( %ql )
 	))

@@ -47,7 +47,7 @@ think @@( do nothing for long enough for the '@fo me=' to take effect )
 Our old stand-by.
 
 */
-&c.census [v( d.cs )]=$^\+?census([\s\S]+)?$:@pemit %#=
+&c.census [v( d.cs )]=$^\+?census([\\s\\S]+)?$:@pemit %#=
 	[setq( 0, secure( %1 ))]
 	[switch( %q0, 
 		, u( c.census.default ), 

@@ -62,6 +62,8 @@ Requires:
 
 --
 
+
+
 aspiration/pitch <term>=<aspiration>
 aspiration/approve <player>/<number>[=<reason>]
 aspiration/deny <player>/<number>
@@ -86,6 +88,8 @@ Aspirations Log System <asp>
 @parent Aspirations System <asp>=codp
 
 
+// This is used by d.cg ... need to put the information THERE.
+@fo me=&d.asp [v( d.cg )]=search( name=aspirations system <asp> )
 
 
 // -----------------------------------------------------------------------------
@@ -141,24 +145,25 @@ Aspirations Log System <asp>
 2: filter item 
 
 e.g. 
-	think filter( asp/filter.term, lattr( %#/_aspiration.* ), , , %#, st )
+	think filter( [v( d.asp )]/filter.term, lattr( %#/_aspiration.* ), , , %#, st )
 
 */
 
 // .. term: short-term, long-term
-&filter.term [v( d.asp )]=strmatch( elements( get( %1/%0 ), 2, | ), %2 )
+// filter( [v( d.asp )]/filter.term, %qa, , , %0, short-term )
+&filter.term [v( d.asp )]=strmatch( elementsmux( get( %1/%0 ), 2, | ), %2 )
 
 // .. status: pitched, approved, fulfilled
 &filter.status [v( d.asp )]=
-	strmatch( first( elements( get( %1/%0 ), 1, | ), : ), %2 )
+	strmatch( first( elementsmux( get( %1/%0 ), 1, | ), : ), %2 )
 
 // .. find aspiration based on keyword in text
 &filter.aspiration.keyword [v( d.asp )]=
-	strmatch( elements( get( %1/%0 ), 3, | ), *%2* )
+	strmatch( elementsmux( get( %1/%0 ), 3, | ), *%2* )
 
 // .. find fullilled based on keyword in text
 &filter.fulfilled.keyword [v( d.asp )]=
-	strmatch( elements( get( %1/%0 ), 4, | ), *%2* )
+	strmatch( elementsmux( get( %1/%0 ), 4, | ), *%2* )
 
 
 /*
@@ -187,10 +192,10 @@ f: fulfilled keyword (for filter)
 	strcat( 
 		setq( c, lattr( %0/_aspiration.* )), 
 
-		setq( t, trim( edit( grab( %1, term:*, | ), term:, ))), 
-		setq( s, trim( edit( grab( %1, status:*, | ), status:, ))), 
-		setq( a, trim( edit( grab( %1, keyword:*, | ), keyword:, ))), 
-		setq( f, trim( edit( grab( %1, fulfill:*, | ), fulfill:, ))), 
+		setq( t, trim( pedit( grab( %1, term:*, | ), term:, ))), 
+		setq( s, trim( pedit( grab( %1, status:*, | ), status:, ))), 
+		setq( a, trim( pedit( grab( %1, keyword:*, | ), keyword:, ))), 
+		setq( f, trim( pedit( grab( %1, fulfill:*, | ), fulfill:, ))), 
 
 // term length
 		if( strlen( %qt ), 
@@ -241,7 +246,7 @@ f: fulfilled keyword (for filter)
 					last( 
 						setr( l, 
 							sort( 
-								edit( lattr( %0/_aspiration.* ), _ASPIRATION., )
+								pedit( lattr( %0/_aspiration.* ), _ASPIRATION., )
 							)
 						)
 					)
@@ -324,6 +329,8 @@ c: content
 		u( display.aspiration.list, %#, lattr( %#/_aspiration.* ))
 	); 
 
+	@if eq( %qj, 1 )={@include/target/command [v( d.rjs )]/CMD`REQ-ADD=%q7, %q8, %q9;}
+	
 // --
 
 @set v( d.asp )/c.aspiration=regex
@@ -535,50 +542,64 @@ List the player's aspiration(s).
 
 
 
-
+/*
 
 // == ACTION FUNCTIONS =========================================================
 
-
-
-
-
-
-
-
-
-
-
+Is something supposed to go here?
 
 // -=-=-=-=-=-=-==--==-==--=-=-=-=-=-=-=-=-=-=-=-==-=--=-=-==--=-=-=-=-=-=-==--=
 
 
 // -----------------------------------------------------------------------------
-// -- Function: Create the job itself ------------------------------------------
+// -- Job Integration! ------------------------------------------
 // As a hook for other systems
+
+The assumption here is that we're using Rockpath's Job system. IF YOU"RE NOT...
+This'll fail like woah.
+
+Basically, we're replacing Thenomain's Jobs Request System, only short cutting it.
+The original code called f.create.job, which was supposed to trigger something in
+the JRS. But Rockpath's Job System is simple enough we can sidestep it all.
+
+As such... f.create.job captures input and puts it in the register.
+
+The c.asp text has an @include/target/command that runs the +request command.
+
+That's it.
 
 // 0: enactor (%#)
 // 1: job title
 // 2: job contents
 
-&f.create.job [v( d.asp )]=
-	trigger( v( d.jrs )/trig.create.job, 
-		%0, 
-		u( d.bucket ), 
-		2, 
-		%1, 
-		%2, 
-		u( d.jgroup )
+/*
+
+
+&f.create.job [v( d.asp )]=strcat(
+	setq( j, 1 ),
+	setq( 7, u( d.rjs.category ) ),
+	setq( 8, %1 ),
+	setq( 9, %2 )
 	)
 
+@fo me=&d.rjs [v( d.asp )]=search( name=Globals: Rockpath's Jobs System <RJS> )
+@fo me=&d.rjdb [v( d.asp )]=search( name=Rockpath's Job Database )
 
+@fo me=&d.rjs me=search( name=Globals: Rockpath's Jobs System <RJS> )
+@fo me=&d.rjdb me=search( name=Rockpath's Job Database )
 
-
-
-
-
-
-
+&d.rjs.category [v( d.asp )]=ASP
+	
+@wait 0=@edit [v( d.rjdb )]/LIST`CATEGORIES=$,%bASP
+	
+@assert t( search( name=Globals: Rockpath's Jobs System <RJS> ) )=
+	{ 
+		think ansi( 
+			rhu, WARNING!!!, 
+			nh, %bCould not find "Globals: Rockpath's Jobs System <RJS>"! 
+			Aspirations code will not work until this is fixed. 
+		) 
+	}
 
 /*
 ################################################################################
@@ -601,7 +622,7 @@ A player has pitched a new aspiration
 &f.aspiration/pitch.action [v( d.asp )]=
 	strcat( 
 		setq( t, grab( |long-term|short-term, %0*, | )), 
-		setq( a, translate( edit( %1, |, ), p )), 
+		setq( a, translate( pedit( %1, |, ), p )), 
 		setq( n, u( f.next-index, %# )), 
 		case( 0, 
 			t( %qt ), 
@@ -726,7 +747,7 @@ A player has pitched a new aspiration
 &f.aspiration/fulfill.request [v( d.asp )]=
 	strcat( 
 		setq( n, %0 ), 
-		setq( r, translate( edit( %1, |, ), p )), 
+		setq( r, translate( pedit( %1, |, ), p )), 
 		setq( a, get( %#/_aspiration.%qn )), 
 		setq( s, first( %qa, : )), 
 		setq( a, last( %qa, | )), 
@@ -752,7 +773,7 @@ A player has pitched a new aspiration
 				), 
 
 // .. create the job (via 'job request system')
-				u( f.create.job, 
+				u( f.create.job,
 					%#, 
 					u( display.fulfill.title, %#, %qn ), 
 					u( display.fulfill.contents, %#, %qn, %qa, %qr )
@@ -869,11 +890,11 @@ n: new attribute
 // ok: set 'approved' to 'fulfilled', add |<reason> as 4th element
 			strcat( 
 				setq( n, replace( %qa, 1, fulfilled, : )), 
-				setq( n, %qn|[edit( %2, |, )] ), 
+				setq( n, %qn|[pedit( %2, |, )] ), 
 				set( %qp, _aspiration.%1:%qn ), 
 				u( .msg, asp/fulfill, 
 					Fulfilled [name( %qp )]'s Aspiration #%1 with reason: 
-					[edit( %2, |, )]
+					[pedit( %2, |, )]
 				), %r, 
 				u( .msg, asp/fulfill, 
 					Remember to approve their job and give them a Beat!
@@ -912,7 +933,7 @@ a: aspiration text
 &f.aspiration/drop.request [v( d.asp )]=
 	strcat( 
 		setq( n, %0 ), 
-		setq( r, translate( edit( %1, |, ), p )), 
+		setq( r, translate( pedit( %1, |, ), p )), 
 		setq( a, get( %#/_aspiration.%qn )), 
 		setq( s, first( %qa, : )), 
 		setq( a, last( %qa, | )), 
@@ -949,7 +970,7 @@ a: aspiration text
 					u( .msg, asp/drop,
 						 u( display.drop.player-message, %#, %qn, %qa, %qr )
 					), 
-					u( f.create.job, 
+					u( f.create.job,
 						%#, 
 						u( display.drop.title, %#, %qn ), 
 						u( display.drop.contents, %#, %qn, %qa, %qr )
@@ -1062,8 +1083,8 @@ t: aspiration status
 			strcat( 
 				u( .msg, asp/deny, 
 					strcat( 
-						Deleting, %b, moniker( %qp ), 's Aspiration #%1 pitch:, 
-						%b, elements( %qa, 3, | ), %r, 
+						Deleting, %b, cname( %qp ), 's Aspiration #%1 pitch:, 
+						%b, elementsmux( %qa, 3, | ), %r, 
 						space( 11 ), 
 						Remember to process their job with a reason why. 
 					)
@@ -1234,7 +1255,7 @@ n: list of aspiration numbers (indecies) for those attrs
 			inc( 
 				max( 
 					2, 
-					strlen( u( .lmax, sort( edit( %1, _ASPIRATION., ))))
+					strlen( u( .lmax, sort( pedit( %1, _ASPIRATION., ))))
 				)
 			)
 		), 
@@ -1251,7 +1272,7 @@ n: list of aspiration numbers (indecies) for those attrs
 				), 
 // .. display each line, if appropriate
 				setq( a, filter( filter.status, %1, , , %0, %i0 )), 
-				setq( n, sort( edit( %qa, _ASPIRATION., ))), 
+				setq( n, sort( pedit( %qa, _ASPIRATION., ))), 
 				if( words( %qa ), 
 					iter( %qn, 
 						u( format.aspiration.one-line, %i0, %0, %qm, %qw, %qr ), 
@@ -1294,14 +1315,14 @@ g: get current aspiration's contents
 	wrap( 
 		strcat( 
 			rjust( ansi( h, %i0. ), %2 ), %b, 
-			elements( 
+			elementsmux( 
 				setr( g, get( %1/_aspiration.%i0 )), 
 				3, | 
 			), %b, 
-			ansi( xh, %([elements( %qg, 2, | )]%) ), 
-			if( t( setr( g, elements( %qg, 3, | ))), %rFulfilled: %qg )
+			ansi( xh, %([elementsmux( %qg, 2, | )]%) ), 
+			if( t( setr( g, elementsmux( %qg, 3, | ))), %rFulfilled: %qg )
 		), 
-		%4, left, %b, @@( right ), inc( %2 ), %r, %3 
+		%4, left, %b, @@( right ), inc( %2 )
 	)
 
 
@@ -1329,14 +1350,14 @@ g: get current aspiration's contents
 				%b-%b, 
 				convsecs( rest( first( %qa, | ), : )), 
 				%b-%b, 
-				u( .titlestr, elements( %qa, 2, | )), 
+				u( .titlestr, elementsmux( %qa, 2, | )), 
 				%), %r%r, 
 
 				wrap( 
 					strcat( 
-						elements( %qa, 3, | ), 
+						elementsmux( %qa, 3, | ), 
 						if( 
-							t( setr( b, elements( %qa, 4, | ))), 
+							t( setr( b, elementsmux( %qa, 4, | ))), 
 							%rFulfilled: %qb 
 						)
 					), 

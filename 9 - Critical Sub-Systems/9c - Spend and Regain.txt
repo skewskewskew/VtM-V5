@@ -87,7 +87,7 @@ system.
 	r: reason 
 */
 
-&c.spend [v( d.psrs )]=$(?s)^\+?spend(/[^\s]+)*( .*)$:
+&c.spend [v( d.psrs )]=$(?s)^\+?spend(/[^\\s]+)*( .*)*$:
 	@assert isapproved( %# )={ 
 		@pemit %#=u( .msg, spend, You must be approved ); 
 	}; 
@@ -130,7 +130,7 @@ system.
 
 */
 
-&c.regain [v( d.psrs )]=$(?s)^\+?regain(/[^\s]+)*( .*)$:
+&c.regain [v( d.psrs )]=$(?s)^\+?regain(/[^\\s]+)*( .*)*$:
 	@assert isapproved( %# )={ 
 		@pemit %#=u( .msg, regain, You must be approved ); 
 	}; 

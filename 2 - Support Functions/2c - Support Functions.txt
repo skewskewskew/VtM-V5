@@ -46,9 +46,9 @@ Filter based on a tags list
 */
 
 &fil.list-stats-tags [v( d.sfp )]=
-	ulocal( 
+	u( 
 		f.hastag?.workhorse, 
-		ulocal( f.statpath-without-instance, %0 ), 
+		u( f.statpath-without-instance, %0 ), 
 		%1, 
 		%2
 	)

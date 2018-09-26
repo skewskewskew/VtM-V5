@@ -343,12 +343,10 @@ think u( v( d.nsc )/display.value.pool, 4.-2, 5.-1)
 
 // .. display
 		divider( Traits ), %r, 
-		vcolumns( 
-			%qw:[u( display.trait-and-value, %qy, %qt, %qw, pool, %b, %qp )], 
-			%qw:%qz, 
-
-			|, 
-			%b 
+		printf( $-%qws $-%qws,
+			[u( display.trait-and-value, %qy, %qt, %qw, pool, %b, %qp )],
+			%qz, 
+			|
 		)
 	)
 
@@ -488,7 +486,7 @@ FINAL SHEET:
 		u( block.skills, %0, %2 ), %r, 
 		u( block.merits, %0, %2 ), %r, 
 		udefault( block.powers.[get( %0/_bio.template )], , %0, %2 ), 
-		u( block.advantages, %0, %2 ), 
+		u( block.advantages, %0, %2 ), %r,
 		u( block.traits, %0, %2 ), %r, 
 		udefault( block.traits.[get( %0/_bio.template )], , %0, %2 ), 
 		u( block.health, %0, %2 ), %r, 

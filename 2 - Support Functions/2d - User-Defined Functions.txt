@@ -104,7 +104,7 @@ qp: Dbref of player's sheet
 		), 
 
 // if target passed & found, do 'sheet lookup', else do 'dd lookup'
-		if( setr( s, ulocal( f.statpath-lookup-sheet, %qp, %0 )), 
+		if( t( setr( s, ulocal( f.statpath-lookup-sheet, %qp, %0 )) ), 
 			%qs, 
 			ulocal( f.statpath-lookup-dd, %0 )
 		)
@@ -152,7 +152,7 @@ qr: results of f.statpath
 // .. Step 1: Capitalize Words
 		pedit( %0, _, %b ), 
 // .. Step 2: Capitalize Substats
-		titlestr( %i0 ), 
+		caplist( %i0,,,L,1 ), 
 		., 
 		. 
 	)
@@ -495,7 +495,7 @@ qb: boolean list of matches
 		)
 	)]
 
-	[if( %2, 
+	[if( t( %2 ), 
 // and-check
 		land( %qb ), 
 // else/default: or-check
@@ -747,9 +747,9 @@ qr: prerequisite checks
 // qs: statpath: If we can grab it from the player, else grab it from the DD.
 			setq( s, 
 				if( 
-					setr( s, 
+					t( setr( s, 
 						ulocal( f.statpath.workhorse, rest( %0, / ), %qp )
-					), 
+					) ), 
 					%qs, 
 					ulocal( f.statpath.workhorse, rest( %0, / ))
 				)
@@ -1115,7 +1115,7 @@ qr: prerequisites check, 'template' and 'other' only
 // (Note: "first()" is there in case they're trying to set multiple stats)
 	[setq( s, 
 		if( 
-			setr( s, u(f.statpath.workhorse, rest( %0, / ), %qp )), 
+			t( setr( s, u(f.statpath.workhorse, rest( %0, / ), %qp )) ), 
 			%qs, 
 			u( f.statpath.workhorse, rest( %0, / ))
 		)
@@ -1245,7 +1245,7 @@ qr: prerequisites check, 'template' and 'other' only
 // (Note: "first()" is there in case they're trying to set multiple stats)
 		setq( s, 
 			if( 
-				setr( s, u( f.statpath.workhorse, rest( %0, / ), %qp )), 
+				t( setr( s, u( f.statpath.workhorse, rest( %0, / ), %qp )) ), 
 				%qs, 
 				u( f.statpath.workhorse, rest( %0, / ))
 			)
@@ -1326,7 +1326,7 @@ qc: stat class (must be numeric)
 		setq( d, u( %qp/_%qs )), 
 		setq( f, first( %qd, . )), 
 		setq( r, rest( %qd, . )), 
-		setq( a, if( setr( a, add( %qf, %2 )), %qa, )), 
+		setq( a, if( t( setr( a, add( %qf, %2 )) ), %qa, )), 
 		setq( i, ulocal( f.statpath-without-instance, %1 )), 
 		setq( c, ulocal( f.get-class, %1 )), 
 
@@ -1468,7 +1468,7 @@ late to change it now.
 			strcat( 
 				if( words( lattr( %1/_%2 )), #MAIN# ), |, 
 				iter( sort( lattr( %1/_*!%2 )), 
-					titlestr( pedit( trim( first( %i0, ! ), _ ), _, %b )), 
+					caplist( pedit( trim( first( %i0, ! ), _ ), _, %b ),,,L,1 ), 
 					, | 
 				)
 			), 

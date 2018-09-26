@@ -499,7 +499,7 @@ uses: vcolumn(), our vertical-column system
 		strcat( 
 				ansi( h, Gender ), :, %b, 
 					setr( g, get( %0/sex )), %b, 
-					u( display.check.ok-no, match( f m, strtrunc( %qg, 1 ))), 
+					u( display.check.ok-no, t( %qg ) ), 
 					`, 
 				ansi( h, Concept ), :, %b, 
 					if( 
@@ -538,7 +538,7 @@ uses: vcolumn(), our vertical-column system
 
 // >> display results
 		divider( Biography Check, width( %# )), %r, 
-		vcolumn( 38:%q1, 37:%q2, `, %b, %b%b )
+		vcolumns( 38:%q1, 37:%q2, `, %b, %b%b )
 	)
 
 
@@ -566,7 +566,7 @@ Merits: 5/10 (5 on <name of Power Stat>)
 	strcat( 
 		divider( Chargen Levels, width( %# )), %r, 
 
-		%b%b, ansi( h, Attributes ), :%b, 
+		%b%b [ansi( h, Attributes )] :%b, 
 		udefault( 
 			check.chargen.attributes.%1, 
 			u( check.chargen.attributes.default, %0 ), 
@@ -575,7 +575,7 @@ Merits: 5/10 (5 on <name of Power Stat>)
 
 		ulocal( check.chargen.attributes, %0, %1 ), %r, 
 
-		%b%b, ansi( h, Skills ), :%b, 
+		%b%b [ansi( h, Skills )] :%b, 
 		udefault( 
 			check.chargen.skills.%1, 
 			u( check.chargen.skills.default, %0 ), 
@@ -583,17 +583,17 @@ Merits: 5/10 (5 on <name of Power Stat>)
 		), %r, 
 		ulocal( check.chargen.specialties, %0, %1 ), %r, 
 
-		%b%b, ansi( h, Aspirations ), :%b, 
+		%b%b [ansi( h, Aspirations )] :%b, 
 			setq( a, u( f.allocated.aspirations, %0 )), 
 			Short-Term:, %b, first( %qa, / ), /2%,%b, 
 			Long-Term:, %b, rest( %qa, / ), /1%b, 
 			u( display.check.stats, %0, aspirations ), %r, 
 
-		%b%b, ansi( h, Merits ), :%b, 
+		%b%b [ansi( h, Merits )] :%b, 
 			setq( a, u( f.allocated.merits, %0 )), 
 			ladd( %qa, / ), /10, 
-			%b%(, rest( %qa, / ), %b, on Power Stat%), %b, 
-			u( display.check.stats, %0, merits ), %r, 
+			%b%( [rest( %qa, / )] %b on Power Stat%) %b 
+			[u( display.check.stats, %0, merits )], %r, 
 
 // .. template chargen checks
 		u( check.chargen.%1, %0 )

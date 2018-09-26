@@ -226,7 +226,7 @@ Returns Templates (%0) that match tags on Statpath (%1)
 	strcat( 
 
 // header: <name> (<type>) [<category>]
-		wheader( 
+		wheader(  
 			[pedit( %qn, %(%), %(<type>%) )] 
 			%[[ulocal( 
 				[u( d.stat-funcs )]/f.statname.workhorse, 

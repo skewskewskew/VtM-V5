@@ -1122,7 +1122,7 @@ Valid award:
 
 	@pemit %qp=u( .msg, 
 		xp/award, 
-		[moniker( %# )] has just awarded you 
+		[cname( %# )] has just awarded you 
 		[u( .plural, %qa, Beat, Beats )] 
 		[if( not( strmatch( %qt, normal )), %(%qt%)%b )]
 		for '%qr' 
