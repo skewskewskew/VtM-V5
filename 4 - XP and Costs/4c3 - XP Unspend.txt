@@ -71,7 +71,7 @@ m: modified value (%ql, trait_value_old, '!<added thing>' for list types)
 
 	think strcat( 
 		entry num:, setr( e, first( %1 )), %r, 
-		reason:, setr( r, trim( rest( %1, for ))), %r, 
+		reason:, setr( r, trim( after( %1, for ))), %r, 
 	); 
 
 	@assert cand( isint( %qe ), gt( %qe, 0 ))={
@@ -243,7 +243,7 @@ m: modified value (%ql, trait_value_old, '!<added thing>' for list types)
 		%r%r, 
 
 // .. refund amt
-		Refunding, %b, 
+		Refunding %b, 
 			case( %qa, 
 				freebie, no Exp %(freebie%), 
 				strcat( 
@@ -253,8 +253,8 @@ m: modified value (%ql, trait_value_old, '!<added thing>' for list types)
 					%(, u( .plural, floor( %qs ), Beat, Beats ), %), 
 				)
 			), %b, 
-			if( strmatch( %qd, %# ), you, to [name( %qd )] ), %b, 
-			for reason '%qr', 
+			if( strmatch( %qd, %# ), you, to [name( %qd )] ), 
+			%bfor reason '%qr', 
 		%r, 
 		footer( %qe, width())
 	)

@@ -71,7 +71,7 @@ qs: Stat to check.
 		0, 
 // .. staff-only
 		isstaff( %@ ), 
-		#-1 STAFF ONLY, 
+		#-1 STAFF ONLY (f.statpath), 
 // .. must have a stat to look up
 		comp( %qs, ), 
 		#-1 NEED STAT TO LOOK UP,  
@@ -213,9 +213,9 @@ requires: isstaff(<dbref>)
 
 		case( 0, 
 // the following may work without objeval(<wiz>, getstat(xx/yy))
-// [cor( isstaff( %@ ), strmatch( %qp, %# ))]
-			isstaff( %@ ), 
-			#-1 PERMISSION DENIED Checking %@, 
+// [cor( isstaff( %: ), strmatch( %qp, %# ))]
+			isstaff( %: ), 
+			#-1 PERMISSION DENIED (&f.getstat), 
 			t( %qp ), 
 			#-1 PLAYER NOT FOUND, 
 			t( setr( d, u( f.find-sheet, %qp ))), 
@@ -734,7 +734,7 @@ qr: prerequisite checks
 // --
 
 &f.setstat [v( d.sfp )]=
-	if( isstaff( %@ ), 
+	if( isstaff( %: ), 
 // Staff?  OK.
 		strcat( 
 
@@ -1150,7 +1150,7 @@ qr: prerequisites check, 'template' and 'other' only
 	)]
 
 	[switch( 0, 
-		isstaff( %@ ), #-1 Staff Only, 
+		isstaff( %: ), #-1 Staff Only, 
 		t( %qp ), #-1 Player Not Found, 
 		t( get( %qw/_bio.template )), #-1 Sheet Template Not Found, 
 		comp( rest( %0, /), ), #-1 Stat Name May Not Be Null, 
@@ -1280,7 +1280,7 @@ qr: prerequisites check, 'template' and 'other' only
 		), 
 
 		switch( 0, 
-			isstaff( %@ ), #-1 Staff Only, 
+			isstaff( %: ), #-1 Staff Only, 
 			t( %qp ), #-1 Player Not Found, 
 			not( strmatch( %qx, #-* )), %qx, 
 			t( get( %qw/_bio.template )), #-1 Sheet Template Not Found, 
@@ -1422,7 +1422,7 @@ s: statpath (if appropriate)
 		setq( s, if( strlen( %qr ), ulocal( f.statpath.workhorse, %qr, %qp ))), 
 
 		case( 0, 
-			isstaff( %@ ), 
+			isstaff( %: ), 
 			#-1 Staff Only, 
 
 			t( %qp ), 
