@@ -113,7 +113,7 @@ List of stats on a sheet, based on passed tags
 		[v( d.sfp )]/fil.list-stats-tags, 
 // .. lazy, so turning "_sheet.statpath" into "sheet.statpath" 
 // .. so we can use the filter for non-sheet matches
-		rest( edit( lattr( %0/_%1.* ), %b_, %b ), _ ), 
+		rest( pedit( lattr( %0/_%1.* ), %b_, %b ), _ ), 
 		, 
 		, 
 		%2, 
@@ -156,12 +156,12 @@ Does not presently work for List stats
 
 &f.points.category [v( d.cg )]=
 	strcat( 
-		setq( l, u( f.list-stats-tags, %0, %1, %2 )), 
+		[setq( l, u( [v( d.sfp )]/f.list-stats-tags, %0, %1, %2 ))],
 		setr( s, 
 			ladd( 
 				iter( 
 					%ql, 
-					first( u( %0/_%i0 ), . )
+					first( u( %0/_## ), . )
 				)
 			)
 		)

@@ -47,7 +47,7 @@ think @@( do nothing for long enough for the '@fo me=' to take effect )
 Our old stand-by.
 
 */
-&c.census [v( d.cs )]=$^\+?census([\s\S]+)?$:@pemit %#=
+&c.census [v( d.cs )]=$^\+?census([\\s\\S]+)?$:@pemit %#=
 	[setq( 0, secure( %1 ))]
 	[switch( %q0, 
 		, u( c.census.default ), 
@@ -103,9 +103,9 @@ This hits the iteration limit and hits it hard.
 			setq( %i0, 
 				[filter( fil.attr.string.is, %qa, , , sex, %i0* )]:
 				[filter( fil.attr.string.is, %qu, , , sex, %i0* )]
-			), , @@
+			), , @@( Null )
 		), 
-		columns( 
+		column( 
 			Male: [words( first( %qm, : ))]
 				[if( 
 					t( setr( t, rest( %qm, : ))), 
@@ -149,12 +149,12 @@ end - gender census */
 				., |
 			)
 		), 
-		columns( %ql, 25, |, 2 ), 
+		column( %ql, 25, |, 2 ), 
 
 // -- template's main census --
 		iter( get( v( d.dd )/bio.template ), 
 			ulocal( display.census.template.%i0 ), 
-			. , @@ 
+			. , @@( Null )
 		), 
 
 // -- footer --
@@ -192,7 +192,7 @@ j: specific kith matches (special.kith.<data>) -- old code
 /* seeming breakdown -- from Changeling -- left in to show how we did this
 			t( %qj ), 
 			[header( Census: [titlestr( last( %qj, . ))] )]%r
-			[edit( 
+			[pedit( 
 				ulocal( 
 					display.census.attribute, 
 					_bio.kith, 
@@ -215,7 +215,7 @@ end - seeming breakdown */
 /* seeming breakdown w/wildcard 
 			t( %qg ), 
 			[header( Census: [titlestr( last( %qg, . ))] )]%r
-			[edit( 
+			[pedit( 
 				ulocal( 
 					display.census.attribute, 
 					_bio.kith, 
@@ -364,7 +364,7 @@ think ulocal( v( d.cs )/f.roster.string, _skill.crafts.cooking, 1 )
 
 // List of All Ogres:
 think >> 
-	[edit( 
+	[pedit( 
 		u( v( d.cs )/f.roster.string, 
 			_bio.kith, 
 			u( v( d.dd )/special.kith.ogre ), 
@@ -436,7 +436,7 @@ think
 think 
 	[setq( t, skill )]
 	[setq( s, crafts )]
-	[wheader( titlestr( edit( %qs, _, %b )))]%r
+	[wheader( titlestr( pedit( %qs, _, %b )))]%r
 	[iter( 
 		ulocal( v( d.cs )/f.roster.string, _%qt.%qs, iter( first( u( v( d.dd )/%qt.%qs ), | ), %i0*, ., . )), 
 
@@ -473,7 +473,7 @@ think
 	[setq( w, rest( %qs, . ))]
 	[setq( t, first( %qs, . ))]
 	[setq( n, strmatch( u( v( d.dd )/.class, %qs ), numeric ))]
-	[wheader( titlestr( edit( %qw, _, %b )))]%r
+	[wheader( titlestr( pedit( %qw, _, %b )))]%r
 	[iter( 
 		ulocal( v( d.cs )/f.roster.string, 
 			_%qs, 
@@ -491,7 +491,7 @@ think
 				)
 			)
 		), 
-		|, @@ 
+		|, @@( Null )
 	)]
 	[wfooter( )]
 
@@ -612,7 +612,7 @@ Might never use this, but it's nice to have for completeness.
 */
 
 &display.census.totals [v( d.cs )]=
-	columns( 
+	column( 
 		iter( u( f.roster.totals ), 
 			[first( %i0, : )]: [words( rest( %i0, : ))], |, |
 		), 
@@ -649,7 +649,7 @@ u: unapproved <list>
 		setq( v, iter( %1, first( %i0, : ), ., . )), 
 		setq( r, ulocal( f.roster.string, %0, %qv, if( t( %2 ), l ))), 
 
-		columns( 
+		column( 
 			iter( %qr, 
 				strcat( 
 					setq( l, rest( %i0, : )), 
@@ -697,7 +697,7 @@ output: List.of.types. If dd has them, it's easy, else we have to build them
 		1, %1, 
 // type list is *, so determine what's already on the game. cry.
 		0, localize( strcat( 
-			setq( 0, edit( %0, %(%), %(*%) )), 
+			setq( 0, pedit( %0, %(%), %(*%) )), 
 			setq( l, 
 				setunion( 
 					iter( 
@@ -787,13 +787,13 @@ l: value name:approved list:unapproved list|value:approved:unapproved
 		setq( t, ulocal( f.roster.types, %0, %qt )), 
 		setq( n, u( v( d.sfp )/f.isclass?, %0, numeric )), 
 		setq( z, 0 ), 
-		iter( %qd, setq( z, max( strlen( %i0 ), %qz )), ., @@ ), 
+		iter( %qd, setq( z, max( strlen( %i0 ), %qz )), ., @@( Null )), 
 
 // Instanced Stats
 		if( t( %qt ), 
 			iter( %qt, 
 				strcat( 
-					setq( 0, edit( %0, %(%), %(%i0%) )), 
+					setq( 0, pedit( %0, %(%), %(%i0%) )), 
 					setq( l, u( f.roster.order-approved, _%q0, %qd, %qn )), 
 					if( %1, 
 // .. roster (named) display
@@ -802,7 +802,7 @@ l: value name:approved list:unapproved list|value:approved:unapproved
 						), 
 // .. census (totals only) display
 						strcat( 
-							wdivider( titlestr( edit( %i0, _, %b ))), %r, 
+							wdivider( titlestr( pedit( %i0, _, %b ))), %r, 
 							u( display.census.breakdown.totals, 
 								%ql, %qn, %qz 
 							)
@@ -877,7 +877,7 @@ w: number of words of whichever list ( %qa/%qu ) we're looking at the time.
 // .. subheader
 			wdivider( 
 				if( %2, 
-					[titlestr( edit( rest( %0, . ), _, %b ))]: 
+					[titlestr( pedit( rest( %0, . ), _, %b ))]: 
 					[first( %i0, : )], 
 					titlestr( first( %i0, : ))
 				)
@@ -949,11 +949,11 @@ w: number of words of whichever list ( %qa/%qu ) we're looking at the time.
 */
 
 &display.census.breakdown.totals [v( d.cs )]=
-		[columns( 
+		[column( 
 			trim( 
 				iter( %0, 
-					[setq( a, elements( %i0, 2, : ))]
-					[setq( u, elements( %i0, 3, : ))]
+					[setq( a, elementsmux( %i0, 2, : ))]
+					[setq( u, elementsmux( %i0, 3, : ))]
 
 // .. .. if there's anyone to display, or if it's a numeric stat, display it
 					[if( 
@@ -998,7 +998,7 @@ localize(
 		if( 
 			t( %qz ), 
 			[footer( changeling: seeming )]%r
-			[columns( %ql, 25, |, 2 )]
+			[column( %ql, 25, |, 2 )]
 		), 
 
 		setq( z, 0 ), 
@@ -1018,7 +1018,7 @@ localize(
 		if( 
 			t( %qz ), 
 			[footer( changeling: court )]%r
-			[columns( %ql, 25, |, 2 )]
+			[column( %ql, 25, |, 2 )]
 		)
 	)
 )
@@ -1074,7 +1074,7 @@ localize(
 			%ql 
 		), 
 
-@@ >> bloodline .. do not show empty bloodlines for general display
+@@( Null )>> bloodline .. do not show empty bloodlines for general display
 		if( 
 			t( 
 				setr( l, 
@@ -1093,16 +1093,16 @@ localize(
 					iter( %ql, 
 						strcat( 
 							first( %i0, : ), :%b, 
-							words( elements( %i0, 2, : )), 
+							words( elementsmux( %i0, 2, : )), 
 							if( 
-								t( setr( x, elements( %i0, 3, : ))), 
+								t( setr( x, elementsmux( %i0, 3, : ))), 
 								ansi( xh, %b%(+[words( %qx )]%) )
 							), 
 							setq( w, 
 								max( %qw, 
 									add( 
 										strlen( first( %i0, : )), 
-										words( elements( %i0, 2 3, :, %b )), 
+										words( elementsmux( %i0, 2 3, :, %b )), 
 										4
 									)
 								)
@@ -1112,7 +1112,7 @@ localize(
 					)
 				), 
 				footer( vampire: bloodline ), %r, 
-				columns( %ql, %qw, |, 2 )
+				column( %ql, %qw, |, 2 )
 			)
 		)
 	)
@@ -1144,65 +1144,65 @@ localize(
 Rank all skills at a certain value, above a certain value.
 
 
-think [setq( r, 5 )][setq( o, = )][trim( iter( lattr( v( d.dd )/skill.* ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |[titlestr( edit( rest( %i0, . ), _, %b ))]: %qw ), , @@ ), b, | )]
+think [setq( r, 5 )][setq( o, = )][trim( iter( lattr( v( d.dd )/skill.* ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |[titlestr( pedit( rest( %i0, . ), _, %b ))]: %qw ), , @@( Null )), b, | )]
 
-think [setq( r, 4 )][setq( o, = )][trim( iter( lattr( v( d.dd )/skill.* ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |[titlestr( edit( rest( %i0, . ), _, %b ))]: %qw ), , @@ ), b, | )]
+think [setq( r, 4 )][setq( o, = )][trim( iter( lattr( v( d.dd )/skill.* ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |[titlestr( pedit( rest( %i0, . ), _, %b ))]: %qw ), , @@( Null )), b, | )]
 
-think [setq( r, 4 )][setq( o, > )][trim( iter( lattr( v( d.dd )/skill.* ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |[titlestr( edit( rest( %i0, . ), _, %b ))]: %qw ), , @@ ), b, | )]
+think [setq( r, 4 )][setq( o, > )][trim( iter( lattr( v( d.dd )/skill.* ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |[titlestr( pedit( rest( %i0, . ), _, %b ))]: %qw ), , @@( Null )), b, | )]
 
 
 Sort them desc...
 
-think [setq( r, 4 )][setq( o, > )][revwords( sort( trim( iter( lattr( v( d.dd )/skill.* ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |%qw:[titlestr( edit( rest( %i0, . ), _, %b ))] ), , @@ ), b, | ), n, |, | ), | )]
+think [setq( r, 4 )][setq( o, > )][revwords( sort( trim( iter( lattr( v( d.dd )/skill.* ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |%qw:[titlestr( pedit( rest( %i0, . ), _, %b ))] ), , @@( Null )), b, | ), n, |, | ), | )]
 
 
 Determine the highest value...
 
-think [setq( r, 4 )][setq( o, > )][setr( l, revwords( sort( trim( iter( lattr( v( d.dd )/skill.* ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |%qw:[titlestr( edit( rest( %i0, . ), _, %b ))] ), , @@ ), b, | ), n, |, | ), | ))] (Max [setr( m, first( %ql, : ))])
+think [setq( r, 4 )][setq( o, > )][setr( l, revwords( sort( trim( iter( lattr( v( d.dd )/skill.* ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |%qw:[titlestr( pedit( rest( %i0, . ), _, %b ))] ), , @@( Null )), b, | ), n, |, | ), | ))] (Max [setr( m, first( %ql, : ))])
 
 
 Pull out all that match (Cheap filter)
 
-think [setq( r, 4 )][setq( o, > )][setq( l, revwords( sort( trim( iter( lattr( v( d.dd )/skill.* ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |%qw:[titlestr( edit( rest( %i0, . ), _, %b ))] ), , @@ ), b, | ), n, |, | ), | ))][setq( m, first( %ql, : ))][graball( %ql, %qm:*, |, | )]
+think [setq( r, 4 )][setq( o, > )][setq( l, revwords( sort( trim( iter( lattr( v( d.dd )/skill.* ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |%qw:[titlestr( pedit( rest( %i0, . ), _, %b ))] ), , @@( Null )), b, | ), n, |, | ), | ))][setq( m, first( %ql, : ))][graball( %ql, %qm:*, |, | )]
 
 
 Does it work?
 
-think [setq( r, 5 )][setq( o, = )][setq( s, skill.* )][setq( l, revwords( sort( trim( iter( lattr( v( d.dd )/%qs ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |%qw:[titlestr( edit( rest( %i0, . ), _, %b ))] ), , @@ ), b, | ), n, |, | ), | ))][setq( m, first( %ql, : ))][graball( %ql, %qm:*, |, | )]
+think [setq( r, 5 )][setq( o, = )][setq( s, skill.* )][setq( l, revwords( sort( trim( iter( lattr( v( d.dd )/%qs ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |%qw:[titlestr( pedit( rest( %i0, . ), _, %b ))] ), , @@( Null )), b, | ), n, |, | ), | ))][setq( m, first( %ql, : ))][graball( %ql, %qm:*, |, | )]
 
 
-think [setq( r, 4 )][setq( o, > )][setq( s, attribute.* )][setq( l, revwords( sort( trim( iter( lattr( v( d.dd )/%qs ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |%qw:[titlestr( edit( rest( %i0, . ), _, %b ))] ), , @@ ), b, | ), n, |, | ), | ))][setq( m, first( %ql, : ))][graball( %ql, %qm:*, |, | )]
+think [setq( r, 4 )][setq( o, > )][setq( s, attribute.* )][setq( l, revwords( sort( trim( iter( lattr( v( d.dd )/%qs ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |%qw:[titlestr( pedit( rest( %i0, . ), _, %b ))] ), , @@( Null )), b, | ), n, |, | ), | ))][setq( m, first( %ql, : ))][graball( %ql, %qm:*, |, | )]
 
 
 Pretty well.
 
 
 = 5:
-think [setq( r, 5 )][setq( o, = )][setq( s, skill.* )][setq( l, revwords( sort( trim( iter( lattr( v( d.dd )/%qs ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |%qw:[titlestr( edit( rest( %i0, . ), _, %b ))] ), , @@ ), b, | ), n, |, | ), | ))][setq( m, first( %ql, : ))][graball( %ql, %qm:*, |, | )]
+think [setq( r, 5 )][setq( o, = )][setq( s, skill.* )][setq( l, revwords( sort( trim( iter( lattr( v( d.dd )/%qs ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |%qw:[titlestr( pedit( rest( %i0, . ), _, %b ))] ), , @@( Null )), b, | ), n, |, | ), | ))][setq( m, first( %ql, : ))][graball( %ql, %qm:*, |, | )]
 
 = 4:
-think [setq( r, 4 )][setq( o, = )][setq( s, skill.* )][setq( l, revwords( sort( trim( iter( lattr( v( d.dd )/%qs ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |%qw:[titlestr( edit( rest( %i0, . ), _, %b ))] ), , @@ ), b, | ), n, |, | ), | ))][setq( m, first( %ql, : ))][graball( %ql, %qm:*, |, | )]
+think [setq( r, 4 )][setq( o, = )][setq( s, skill.* )][setq( l, revwords( sort( trim( iter( lattr( v( d.dd )/%qs ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |%qw:[titlestr( pedit( rest( %i0, . ), _, %b ))] ), , @@( Null )), b, | ), n, |, | ), | ))][setq( m, first( %ql, : ))][graball( %ql, %qm:*, |, | )]
 
 = 3:
-think [setq( r, 3 )][setq( o, = )][setq( s, skill.* )][setq( l, revwords( sort( trim( iter( lattr( v( d.dd )/%qs ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |%qw:[titlestr( edit( rest( %i0, . ), _, %b ))] ), , @@ ), b, | ), n, |, | ), | ))][setq( m, first( %ql, : ))][graball( %ql, %qm:*, |, | )]
+think [setq( r, 3 )][setq( o, = )][setq( s, skill.* )][setq( l, revwords( sort( trim( iter( lattr( v( d.dd )/%qs ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |%qw:[titlestr( pedit( rest( %i0, . ), _, %b ))] ), , @@( Null )), b, | ), n, |, | ), | ))][setq( m, first( %ql, : ))][graball( %ql, %qm:*, |, | )]
 
 = 2:
-think [setq( r, 2 )][setq( o, = )][setq( s, skill.* )][setq( l, revwords( sort( trim( iter( lattr( v( d.dd )/%qs ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |%qw:[titlestr( edit( rest( %i0, . ), _, %b ))] ), , @@ ), b, | ), n, |, | ), | ))][setq( m, first( %ql, : ))][graball( %ql, %qm:*, |, | )]
+think [setq( r, 2 )][setq( o, = )][setq( s, skill.* )][setq( l, revwords( sort( trim( iter( lattr( v( d.dd )/%qs ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |%qw:[titlestr( pedit( rest( %i0, . ), _, %b ))] ), , @@( Null )), b, | ), n, |, | ), | ))][setq( m, first( %ql, : ))][graball( %ql, %qm:*, |, | )]
 
 = 1:
-think [setq( r, 1 )][setq( o, = )][setq( s, skill.* )][setq( l, revwords( sort( trim( iter( lattr( v( d.dd )/%qs ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |%qw:[titlestr( edit( rest( %i0, . ), _, %b ))] ), , @@ ), b, | ), n, |, | ), | ))][setq( m, first( %ql, : ))][graball( %ql, %qm:*, |, | )]
+think [setq( r, 1 )][setq( o, = )][setq( s, skill.* )][setq( l, revwords( sort( trim( iter( lattr( v( d.dd )/%qs ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |%qw:[titlestr( pedit( rest( %i0, . ), _, %b ))] ), , @@( Null )), b, | ), n, |, | ), | ))][setq( m, first( %ql, : ))][graball( %ql, %qm:*, |, | )]
 
 
 Same set, but >: 
-think [setq( r, 5 )][setq( o, > )][setq( s, skill.* )][setq( l, revwords( sort( trim( iter( lattr( v( d.dd )/%qs ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |%qw:[titlestr( edit( rest( %i0, . ), _, %b ))] ), , @@ ), b, | ), n, |, | ), | ))][setq( m, first( %ql, : ))][graball( %ql, %qm:*, |, | )]
+think [setq( r, 5 )][setq( o, > )][setq( s, skill.* )][setq( l, revwords( sort( trim( iter( lattr( v( d.dd )/%qs ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |%qw:[titlestr( pedit( rest( %i0, . ), _, %b ))] ), , @@( Null )), b, | ), n, |, | ), | ))][setq( m, first( %ql, : ))][graball( %ql, %qm:*, |, | )]
 
-think [setq( r, 4 )][setq( o, > )][setq( s, skill.* )][setq( l, revwords( sort( trim( iter( lattr( v( d.dd )/%qs ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |%qw:[titlestr( edit( rest( %i0, . ), _, %b ))] ), , @@ ), b, | ), n, |, | ), | ))][setq( m, first( %ql, : ))][graball( %ql, %qm:*, |, | )]
+think [setq( r, 4 )][setq( o, > )][setq( s, skill.* )][setq( l, revwords( sort( trim( iter( lattr( v( d.dd )/%qs ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |%qw:[titlestr( pedit( rest( %i0, . ), _, %b ))] ), , @@( Null )), b, | ), n, |, | ), | ))][setq( m, first( %ql, : ))][graball( %ql, %qm:*, |, | )]
 
-think [setq( r, 3 )][setq( o, > )][setq( s, skill.* )][setq( l, revwords( sort( trim( iter( lattr( v( d.dd )/%qs ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |%qw:[titlestr( edit( rest( %i0, . ), _, %b ))] ), , @@ ), b, | ), n, |, | ), | ))][setq( m, first( %ql, : ))][graball( %ql, %qm:*, |, | )]
+think [setq( r, 3 )][setq( o, > )][setq( s, skill.* )][setq( l, revwords( sort( trim( iter( lattr( v( d.dd )/%qs ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |%qw:[titlestr( pedit( rest( %i0, . ), _, %b ))] ), , @@( Null )), b, | ), n, |, | ), | ))][setq( m, first( %ql, : ))][graball( %ql, %qm:*, |, | )]
 
-think [setq( r, 2 )][setq( o, > )][setq( s, skill.* )][setq( l, revwords( sort( trim( iter( lattr( v( d.dd )/%qs ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |%qw:[titlestr( edit( rest( %i0, . ), _, %b ))] ), , @@ ), b, | ), n, |, | ), | ))][setq( m, first( %ql, : ))][graball( %ql, %qm:*, |, | )]
+think [setq( r, 2 )][setq( o, > )][setq( s, skill.* )][setq( l, revwords( sort( trim( iter( lattr( v( d.dd )/%qs ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |%qw:[titlestr( pedit( rest( %i0, . ), _, %b ))] ), , @@( Null )), b, | ), n, |, | ), | ))][setq( m, first( %ql, : ))][graball( %ql, %qm:*, |, | )]
 
-think [setq( r, 1 )][setq( o, > )][setq( s, skill.* )][setq( l, revwords( sort( trim( iter( lattr( v( d.dd )/%qs ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |%qw:[titlestr( edit( rest( %i0, . ), _, %b ))] ), , @@ ), b, | ), n, |, | ), | ))][setq( m, first( %ql, : ))][graball( %ql, %qm:*, |, | )]
+think [setq( r, 1 )][setq( o, > )][setq( s, skill.* )][setq( l, revwords( sort( trim( iter( lattr( v( d.dd )/%qs ), if( t( setr( w, words( rest( u( v( d.cs )/f.roster.numeric, _%i0, %qr, %qo ), : )))), |%qw:[titlestr( pedit( rest( %i0, . ), _, %b ))] ), , @@( Null )), b, | ), n, |, | ), | ))][setq( m, first( %ql, : ))][graball( %ql, %qm:*, |, | )]
 
 
 
@@ -1212,7 +1212,7 @@ So:
 
 census/maxby skill
 
-@@ census/breakdown <skill>[/<max value>]
+@@( Null )census/breakdown <skill>[/<max value>]
 
 think [setq( s, skill.athletics )][setq( t, 0 )][setq( l, u( v( d.cs )/f.search.attr.template, _%qs ))][setq( v, <max value> )][setq( a, filter( v( d.cs )/fil.approved, %ql ))][setq( u, filter( v( d.cs )/fil.chargen, %ql ))][iter( revwords( first( u( v( d.dd )/%qs ), | ), . ), [footer( %i0 )]%r[ansi( g, -%b, n, Approved: [setr( w, words( setr( n, filter( v( d.cs )/fil.attr.value.is, %qa, , , _%qs, %i0 ))))], g, %b- )]%r[wrap( if( %qw, iter( %qn, name( %i0 ), , %, %b ), ansi( xh, - )), 76, left, %b%b )]%r[ansi( g, -%b, n, Waiting: [setr( w, words( setr( n, filter( v( d.cs )/fil.attr.value.is, %qu, , , _%qs, %i0 ))))], g, %b- )]%r[wrap( if( %qw, iter( %qn, name( %i0 ), , %, %b ), ansi( xh, - )), 76, left, %b%b )], ., %r )]
 

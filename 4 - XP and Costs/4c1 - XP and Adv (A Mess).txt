@@ -128,7 +128,7 @@ because it is spammy as all get-out.
 		AND action='%2'
 	)] 
 	[if( strlen( %3 ), 
-		AND trait_name LIKE '[edit( %3, %b, _ )]%%%%' 
+		AND trait_name LIKE '[pedit( %3, %b, _ )]%%%%' 
 	)]
 
 

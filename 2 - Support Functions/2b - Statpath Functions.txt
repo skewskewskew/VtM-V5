@@ -146,7 +146,7 @@ qz: sub-trait/specialty
 */
 
 &f.stat-input-breakdown-registers [v( d.sfp )]=
-	[setq( z, squish( edit( %0, %(, %b%(, %(%b, %(, %b%), %) )))]
+	[setq( z, squish( pedit( %0, %(, %b%(, %(%b, %(, %b%), %) )))]
 	[setq( x, trim( before( before( %qz, . ), %( )))]
 	[setq( y, before( rest( before( %qz, . ), %( ), %) ))]
 	[setq( z, rest( %qz, . ))]
@@ -195,7 +195,7 @@ qz, qa, qb: Regmatch results
 
 // spaces to underscores
 // (and, cheating, ignore the instance)
-		[setq( 0, edit( first( %0, . ), %b, _ ))]
+		[setq( 0, pedit( first( %0, . ), %b, _ ))]
 
 // instanced?
 		[setq( 0, 
@@ -284,12 +284,12 @@ Used for validating new purchases if sheet-lookup fails.
 	strcat( 
 
 // Break down stat into registers x, y, z
-		setq( 0, edit( %0, _, %b )), 
+		setq( 0, pedit( %0, _, %b )), 
 		u( f.stat-input-breakdown-registers, %q0 ), 
 
 // validate stat name:
 		if( 
-			setr( n, u( f.statpath-validate-name, %q0 )), 
+			t( setr( n, u( f.statpath-validate-name, %q0 )) ), 
 			strcat( 
 
 // .. get dd entry
@@ -306,12 +306,12 @@ Used for validating new purchases if sheet-lookup fails.
 						match( %qy, ), 
 						setq( n, #-2 INSTANCE NOT FOUND ), 
 // .. .. instance list is *, return exactly what we were passed, unless 'null'
-						strmatch( *, setr( 1, elements( %qs, 2, | ))), 
+						strmatch( *, setr( 1, elementsmux( %qs, 2, | ))), 
 						setq( n, 
 							strcat( 
 								before( %qn, _%(%)), 
 								_%(, 
-								edit( %qy, %b, _ ), 
+								pedit( %qy, %b, _ ), 
 								%)
 							)
 						), 
@@ -321,7 +321,7 @@ Used for validating new purchases if sheet-lookup fails.
 							strcat( 
 								before( %qn, _%(%)), 
 								_%(, 
-								edit( %q0, %b, _ ), 
+								pedit( %q0, %b, _ ), 
 								%)
 							)
 						), 
@@ -340,7 +340,7 @@ Used for validating new purchases if sheet-lookup fails.
 						setr( 1, 
 							strmatch( *, 
 								setr( 2, 
-									elements( 
+									elementsmux( 
 										%qs, 
 										add( 
 											2, 
@@ -351,7 +351,7 @@ Used for validating new purchases if sheet-lookup fails.
 								)
 							)
 						), 
-						setq( n, %qn.[edit( %qz, %b, _ )] ), 
+						setq( n, %qn.[pedit( %qz, %b, _ )] ), 
 // .. .. substat-list is an actual list
 						t( setr( 0, grab( .%q2, %qz*, . ))), 
 						setq( n, %qn.%q0 ), 
@@ -451,9 +451,9 @@ NOTE: Instances and Substats on sheet are stored with _ for spaces
 	strcat( 
 // until I can figure out how to have this and lookup-dd work together:
 // Break down stat into registers x, y, z
-		setq( 0, edit( %1, _, %b )), 
+		setq( 0, pedit( %1, _, %b )), 
 		u( f.stat-input-breakdown-registers, %q0 ), 
-		setq( y, edit( %qy, %b, _ )), 
+		setq( y, pedit( %qy, %b, _ )), 
 
 		setq( t, u( f.find-sheet, first( %0, : ))), 
 		setq( s, if( t( setr( s, rest( %0, : ))), %qs!, )), 
@@ -542,7 +542,7 @@ We might as well.
 	localize( strcat( 
 		setq( 0, lattr( %0/_%1.* )), 
 		setq( 1, 
-			iter( u( .crumple, edit( %2, %b, _ ), . ), 
+			iter( u( .crumple, pedit( %2, %b, _ ), . ), 
 				u( .grabexact, 
 					%q0, _%1.%i0 
 				), 
@@ -551,7 +551,7 @@ We might as well.
 		), 
 		setq( 2, 
 			u( .crumple, 
-				edit( %q1, _%1., ), 
+				pedit( %q1, _%1., ), 
 				. 
 			)
 		), 
@@ -606,7 +606,7 @@ returns: class.<statpath> or "numeric" if null
 
 		udefault( 
 			[u( d.data-dictionary )]/
-			class.[setr( s, elements( %qs, 1, . ))].?, 
+			class.[setr( s, elementsmux( %qs, 1, . ))].?, 
 			numeric 
 		)
 	)

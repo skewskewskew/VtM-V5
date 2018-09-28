@@ -109,7 +109,7 @@ I'm stealing this from Reno (with permission).
 	switch( strtrunc( %0, 1 ), 
 
 // null: default
-		@@( <null> ), 
+		@@( null )( <null> ), 
 		u( c.status.default, %1 ), 
 
 // switches
@@ -605,7 +605,7 @@ I'm stealing this from Reno (with permission).
 &C.STATUS/CREATE [v( d.ctst )]=
 	[setq( z, case( %1, cond, condition, tilt, tilt ))]
 	[setq( n, capstr( first( %0,= )))]
-	[setq( a, %1.[edit( %qn, %b, _ )] )]
+	[setq( a, %1.[pedit( %qn, %b, _ )] )]
 	[case( 0, 
 		isstaff( %# ), 
 		[u( .alert, %1 )] Staff only., 
@@ -894,7 +894,7 @@ WARNING: Couldn't get this to work, so I'm turning it off for now.
 			iter( 
 				revwords( sortby( sortby.log.player, lattr( %1/_%qs.log.* ))), 
 				strcat( 
-					elements( %i0, 3 4, . ), 
+					elementsmux( %i0, 3 4, . ), 
 					|, 
 					get( %1/_%i0 ), 
 				), 
@@ -920,8 +920,8 @@ WARNING: Couldn't get this to work, so I'm turning it off for now.
 
 &sortby.log.player [v( d.ctst )]=
 	sub( 
-		elements( %0, 3 4, . ), 
-		elements( %1, 3 4, . )
+		elementsmux( %0, 3 4, . ), 
+		elementsmux( %1, 3 4, . )
 	)
 
 
@@ -1026,7 +1026,7 @@ WARNING: Couldn't get this to work, so I'm turning it off for now.
 		lattr( [v( d.db )]/%1.%0 ), 
 		lattr( 
 			[v( d.db )]/%1.
-			[ifelse( strmatch( %0,\\\\\\\\* ), %0, [edit( %0, %b, _ )]* )] 
+			[ifelse( strmatch( %0,\\\\\\\\* ), %0, [pedit( %0, %b, _ )]* )] 
 		)
 	)
 
@@ -1069,7 +1069,7 @@ WARNING: Couldn't get this to work, so I'm turning it off for now.
 &F.TEST.TO-LIST [v( d.ctst )]=
 	iter( 
 		filter( fil.isplayer, 
-			edit( %0, %,%b, %, ), 
+			pedit( %0, %,%b, %, ), 
 			%, 
 		), 
 		pmatch( %i0 ), 

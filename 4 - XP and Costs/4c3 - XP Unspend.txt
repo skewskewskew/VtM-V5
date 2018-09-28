@@ -71,7 +71,7 @@ m: modified value (%ql, trait_value_old, '!<added thing>' for list types)
 
 	think strcat( 
 		entry num:, setr( e, first( %1 )), %r, 
-		reason:, setr( r, trim( rest( %1, for ))), %r, 
+		reason:, setr( r, trim( after( %1, for ))), %r, 
 	); 
 
 	@assert cand( isint( %qe ), gt( %qe, 0 ))={
@@ -85,7 +85,7 @@ m: modified value (%ql, trait_value_old, '!<added thing>' for list types)
 // check for information about xp_log and the target
 	think strcat( 
 		sql log:, setr( l, sql( u( sql.select.entry_num, %qe ), `, | )), %r, 
-		target objid:, setr( o, elements( %ql, 3, | )), %r, 
+		target objid:, setr( o, elementsmux( %ql, 3, | )), %r, 
 		target dbref:, setr( d, first( %qo, : )), %r, 
 		unspent?:, setr( 0, sql( u( sql.select.unspend.check, %qe ))), %r, 
 	); 
@@ -112,8 +112,8 @@ m: modified value (%ql, trait_value_old, '!<added thing>' for list types)
 
 // check that the action and xp type are valid
 	think strcat( 
-		action:, %b, setr( a, elements( %ql, 7, | )), %r, 
-		xp type:, %b, setr( t, elements( %ql, 12, | )), %r, 
+		action:, %b, setr( a, elementsmux( %ql, 7, | )), %r, 
+		xp type:, %b, setr( t, elementsmux( %ql, 12, | )), %r, 
 	); 
 
 	@assert cor( strmatch( %qa, spend ), strmatch( %qa, freebie ))={ 
@@ -131,24 +131,24 @@ m: modified value (%ql, trait_value_old, '!<added thing>' for list types)
 
 // everything else is okay; display basic info
 	think strcat( 
-		xp (beats) spent:, setr( s, elements( %ql, 6, | )), %r, 
+		xp (beats) spent:, setr( s, elementsmux( %ql, 6, | )), %r, 
 		current beats:, setr( b, get( %qd/_special.beats.%qt )), %r, 
 
-		changed traits?:, setr( z, t( elements( %ql, 10, | ))), %r, 
+		changed traits?:, setr( z, t( elementsmux( %ql, 10, | ))), %r, 
 
-		stat category:, setr( 1, elements( %ql, 9, | )), %r, 
-		stat name:, setr( 2, elements( %ql, 10, | )), %r, 
+		stat category:, setr( 1, elementsmux( %ql, 9, | )), %r, 
+		stat name:, setr( 2, elementsmux( %ql, 10, | )), %r, 
 		statpath:, setr( p, %q1.%q2 ), %r, 
 		stat class:, setr( c, ulocal( v( d.sfp )/f.get-class, %qp )), %r, 
 
-		logged value:, setr( v, elements( %ql, 11, | )), %r, 
+		logged value:, setr( v, elementsmux( %ql, 11, | )), %r, 
 		current value:, setr( x, ulocal( .value, %qd, %qp )), %r, 
 		modified value:, 
 		setr( m, 
 			udefault( f.xp/unspend.%qc, 
 				#-1 I don't know how to unspend that kind of stat, 
 				%qx, %qv, 
-				elements( %ql, 13, | )
+				elementsmux( %ql, 13, | )
 			)
 		), %r, 
 	); 
@@ -243,7 +243,7 @@ m: modified value (%ql, trait_value_old, '!<added thing>' for list types)
 		%r%r, 
 
 // .. refund amt
-		Refunding, %b, 
+		Refunding %b, 
 			case( %qa, 
 				freebie, no Exp %(freebie%), 
 				strcat( 
@@ -253,8 +253,8 @@ m: modified value (%ql, trait_value_old, '!<added thing>' for list types)
 					%(, u( .plural, floor( %qs ), Beat, Beats ), %), 
 				)
 			), %b, 
-			if( strmatch( %qd, %# ), you, to [name( %qd )] ), %b, 
-			for reason '%qr', 
+			if( strmatch( %qd, %# ), you, to [name( %qd )] ), 
+			%bfor reason '%qr', 
 		%r, 
 		footer( %qe, width())
 	)

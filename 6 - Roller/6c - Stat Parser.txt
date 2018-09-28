@@ -138,7 +138,7 @@ q2: Current full stat path
 */
 
 &f.stat-check.stats [v( d.nr )]=
-	iter( edit( %1, -%b, -, -, +- ), 
+	iter( pedit( %1, -%b, -, -, +- ), 
 
 		case( 1, 
 // >> it's a number
@@ -162,7 +162,7 @@ q2: Current full stat path
 			u( f.stat-check.trait, %0, %q0, %q1, %q2 ), 
 			@@( check the stat )
 		), 
-		+, @@ 
+		+, @@( null )
 	)
 
 
@@ -327,13 +327,13 @@ q7: specs' value(s)
 &f.stat-check.skill [v( d.nr )]=
 	if( strmatch( %3, skill.* ), 
 		strcat( 
-			setq( 4, elements( %3, 1 2, . )), 
+			setq( 4, elementsmux( %3, 1 2, . )), 
 			setq( 5, u( .value_full, %0, %q4 )), 
 			setq( 6, rest( rest( %3, . ), . )), 
 // specs' values could be simple '# of specs' like so:
 // 			setq( 7, words( %q6, . )), 
 			setq( 7, 
-				ladd( iter( edit( %q6, %b, _ ), 
+				ladd( iter( pedit( %q6, %b, _ ), 
 					u( .value_full, %0, %q4.%i0 ), 
 					. 
 				)

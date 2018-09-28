@@ -39,7 +39,7 @@ e: error check
 				first( %0, = )
 			)
 		), 
-		setq( a, elements( get( v( d.data-dictionary )/%qs ), 2, | )), 
+		setq( a, elementsmux( get( v( d.data-dictionary )/%qs ), 2, | )), 
 		setq( n, strmatch( setr( t, rest( %0, = )), !* )), 
 		setq( t, titlestr( right( %qt, sub( strlen( %qt ), %qn )))), 
 
@@ -128,7 +128,7 @@ a quick way to add <type> to <statpath>_()
 
 &format.type.into_statpath [v( d.ss )]=
 	strcat( 
-		titlestr( edit( before( rest( %0, . ), %(%) ), _, %b )), 
+		titlestr( pedit( before( rest( %0, . ), %(%) ), _, %b )), 
 		%b, %(%1%) 
 	)
 
@@ -173,7 +173,7 @@ m: matched location of <value> in <current values>, if any
 		setq( v, titlestr( right( %qv, sub( strlen( %qv ), %qn )))), 
 
 		setq( c, ulocal( v( d.stat-funcs )/f.get-class, %qs )), 
-		setq( u, elements( %qa, 1, | )), 
+		setq( u, elementsmux( %qa, 1, | )), 
 		setq( m, match( %qu, %qv, . )), 
 
 		ansi( h, <stat/setvalue>%b, n, 

@@ -46,7 +46,7 @@ We use this to control the damage loop, determining PUSH or WRAP.
 				cand( t( v( dec( inum( 0 )))), not( t( %qz ))), 
 // .. .. set the min type
 				setq( z, inum( 0 ))
-			), , @@ 
+			), , @@() 
 		)]
 // return min type
 		%qz 
@@ -81,20 +81,20 @@ Output: [X][/][/][/][/][ ][ ]
 		iter( 
 // .. .. count the wound levels represented by which outer loop we're on
 // .. .. (here's where we invert, too)
-			lnum( elements( %0, sub( %qw, inum( 0 )))), 
+			lnum( elementsmux( %0, sub( %qw, inum( 0 )))), 
 // .. .. output the symbol on the outer loop we're on
 			ansi( xh, %[, nh, %i1, xh, %] ), 
 			, 
-			@@ 
+			@@() 
 		), 
 		, 
-		@@ 
+		@@() 
 	)]
 
 // .. undamaged (max - damage)
 	[iter( 
 		lnum( sub( %1, ladd( %0 ))), 
-		ansi( xh, %[%b%] ), , @@ 
+		ansi( xh, %[%b%] ), , @@() 
 	)]
 
 // -- test --
@@ -164,7 +164,7 @@ qi: inventory of wound types
 					gte( ladd( %3 ), %4 ), 
 					comp( 
 						u( f.min-dmg, 
-							first( %3 ), elements( %3, 2 ), last( %3 )
+							first( %3 ), elementsmux( %3, 2 ), last( %3 )
 						), 
 						1 
 					)
@@ -174,7 +174,7 @@ qi: inventory of wound types
 				eq( ladd( %3 ), 0 ), 
 				fine, 
 // .. else check the chart
-				elements( 
+				elementsmux( 
 					%qt, 
 					round( mul( fdiv( ladd( %3 ), %4 ), words( %qt, . )), 0 ), 
 					., 
@@ -189,8 +189,8 @@ qi: inventory of wound types
 			itemize( 
 				trim( 
 					iter( %3, 
-						if( gt( %i0, 0 ), [elements( %qi, inum( 0 ), ., .)]. ), 
-						, @@ 
+						if( gt( %i0, 0 ), [elementsmux( %qi, inum( 0 ), ., .)]. ), 
+						, @@() 
 					), 
 					b, . 
 				), 
@@ -298,7 +298,7 @@ qi: inventory of wound types
 				eq( ladd( %1 ), 0 ), 
 				fine, 
 // .. else check the chart
-				elements( 
+				elementsmux( 
 					%qt, 
 					round( mul( fdiv( ladd( %1 ), %2 ), words( %qt, . )), 0 ), 
 					., .
@@ -313,9 +313,9 @@ qi: inventory of wound types
 				trim( 
 					iter( %1, 
 						if( gt( %i0, 0 ), 
-							[elements( %qi, inum( 0 ), ., . )]. 
+							[elementsmux( %qi, inum( 0 ), ., . )]. 
 						), 
-						, @@
+						, @@()
 					), 
 					b, . 
 				), 

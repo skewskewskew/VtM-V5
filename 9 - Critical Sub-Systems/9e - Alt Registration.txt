@@ -23,17 +23,17 @@ You paged Trixie with ‘Because that would be AWESOME.’
 
 
 
-think strcat( setq( l, 0123456789abcdefghijklmnopqrstuvwxyz ), iter( lnum( 6 ), mid( %ql, rand( 1, strlen( %ql )), 1 ), , @@ ))
+think strcat( setq( l, 0123456789abcdefghijklmnopqrstuvwxyz ), iter( lnum( 6 ), mid( %ql, rand( 1, strlen( %ql )), 1 ), , @@( null ) ))
 
 // there is a better way to do this: 
 
-think iter( lnum( 6 ), pack( rand( 0, 35 )), , @@ )
+think iter( lnum( 6 ), pack( rand( 0, 35 )), , @@( null ) )
 
 
 "Or I could maximize pack() and make each digit rand( 0, 63 )
 You say, “I would have to be very careful to use strmatch(), tho, as it's case-sensitive.”
 
-think iter( lnum( 6 ), pack( rand( 0, 63 )), , @@ )
+think iter( lnum( 6 ), pack( rand( 0, 63 )), , @@( null ) )
 
 --
 
@@ -86,7 +86,7 @@ used by xp code for 'player experience'.
 -- Command: Mistress -----------------------------------------------------------
 */
 
-&c.alt ars=$(?s)^\+?alts?(/[^\s]+)*( .*)?$:
+&c.alt ars=$(?s)^\+?alts?(/[^\\s]+)*( .*)?$:
 	@assert isapproved( %# )={ 
 		@pemit %#=u( .msg, alt, You must be approved ); 
 	}; 
@@ -97,7 +97,7 @@ used by xp code for 'player experience'.
 
 		valid switches:, %b, 
 		setr( v, 
-			edit( lattr( %!/c.alt/* ), C.ALT/, , %b, | )
+			pedit( lattr( %!/c.alt/* ), C.ALT/, , %b, | )
 		), %r, 
 
 		switch match:, %b, setr( m, grab( |%qv, %qs*, | )), %r, 
@@ -110,7 +110,7 @@ used by xp code for 'player experience'.
 			udefault( c.alt/%qm, 
 				u( .msg, alt, 
 					Cannot find that switch. 
-					I know: [lcstr( edit( %qv, |, %,%b  ))] 
+					I know: [lcstr( pedit( %qv, |, %,%b  ))] 
 				), 
 				%qi 
 			)
@@ -189,7 +189,7 @@ Verify the target, generate a unique code, store it on the enactor,
 
 			strcat( 
 				setq( c, ulocal( f.generate-code )), 
-				set( %#, _alt.register.[edit( %qo, :, . )]:%qc ), 
+				set( %#, _alt.register.[pedit( %qo, :, . )]:%qc ), 
 				u( .msg, alt/register, Alt request code sent to [name( %qp )] ), 
 				trigger( %!/tr.mail.register, %#, %qp, %qc )
 			)
@@ -214,7 +214,7 @@ Find the code, add objid of enactor to target, add objid of target to enactor
 &c.alt/accept [v(d.ars)]=
 	strcat( 
 		setq( c, lcstr( %0 )), 
-		setq( o, edit( u( .objid, %# ), :, . )), 
+		setq( o, pedit( u( .objid, %# ), :, . )), 
 		setq( s, search( eplayer=strmatch( get( ##/_alt.register.%qo ), %qc ))), 
 		case( 0, 
 			words( %qs ), 
@@ -230,7 +230,7 @@ Find the code, add objid of enactor to target, add objid of target to enactor
 			strcat( 
 				setq( a, u( f.merge-alt-lists, %#, %qs )), 
 				setq( e, 
-					iter( %qa, set( first( %i0, : ), _alt.list:%qa ), , @@ )
+					iter( %qa, set( first( %i0, : ), _alt.list:%qa ), , @@( null ) )
 				), 
 				setq( f, set( %qs, _alt.register.%qo: )), 
 				u( .msg, alt/accept, 
@@ -260,7 +260,7 @@ Find the code, add objid of enactor to target, add objid of target to enactor
 			eplayer=
 			grepi( 
 				##, _alt.register.*, 
-				setr( r, lcstr( iter( lnum( 6 ), pack( rand( 0, 35 )), , @@ )))
+				setr( r, lcstr( iter( lnum( 6 ), pack( rand( 0, 35 )), , @@( null ) )))
 			)
 		), 
 		ulocal( f.generate-code ), 
@@ -323,7 +323,7 @@ Find the code, add objid of enactor to target, add objid of target to enactor
 				strtrunc( %i0, 1 ), 
 				filter( fil.alts.approval_type, %ql, , , %i0  )
 			), 
-			, @@
+			, @@( null )
 		), 
 		iter( chargen approved unapproved staff guest, 
 			if( strlen( r( strtrunc( %i0, 1 ))), 
@@ -335,7 +335,7 @@ Find the code, add objid of enactor to target, add objid of target to enactor
 					), %r, 
 				)
 			), 
-			, @@ 
+			, @@( null ) 
 		), 
 		if( 
 			not( strlen( %qc%qa%qu%qs%qg )), 
@@ -355,7 +355,7 @@ Find the code, add objid of enactor to target, add objid of target to enactor
 		if( hasflag( %qt, connect ), ansi( xh, * ), %b ), %b, 
 		ljust( name( %qt ), 25 ), %b, 
 		ljust( get( %qt/_bio.template), 15 ), %b, 
-		if( t( elements( mail( %qt ), 2 )), Unread mail )
+		if( t( elementsmux( mail( %qt ), 2 )), Unread mail )
 	))
 
 

@@ -32,7 +32,7 @@ qz: temp holder
 qy: dbref: stat-funcs (sfp)
 qx: dbref: data dictionary (dd)
 
-*/
+This fails on muxify:
 
 &f.stat/values [v( d.ss )]=
 	strcat( 
@@ -60,7 +60,7 @@ qx: dbref: data dictionary (dd)
 
 // .. .. "v*=*": value of stat is 'x'.
 						strmatch( %i0, v*=* ), 
-						setq( v, edit( last( %i0, = ), _, %b )), 
+						setq( v, pedit( last( %i0, = ), _, %b )), 
 
 // .. .. search matches type: look for stat types to search for (name complete)
 						t( setr( z, grab( u( %qy/d.search-order ), %i0* ))), 
@@ -68,10 +68,10 @@ qx: dbref: data dictionary (dd)
 
 // .. .. search matches template: filter on template-only (name complete)
 						t( setr( z, grab( u( %qx/bio.template ), %i0*, .))), 
-						setq( t, %qt.[edit( %qz, _, %b )] ), 
+						setq( t, %qt.[pedit( %qz, _, %b )] ), 
 
 // .. .. search matches unknown, assume tag: no name completion
-						setq( t, %qt.[edit( %i0, _, %b )] )
+						setq( t, %qt.[pedit( %i0, _, %b )] )
 					), 
 					, @@
 				)
@@ -144,6 +144,10 @@ qx: dbref: data dictionary (dd)
 		)
 	)
 
+Adding condensed version:
+*/
+
+&f.stat/values [v( d.ss )]=strcat( setq( a, ), setq( t, ), setq( v, ), setq( f, ), setq( y, u( d.stat-funcs )), setq( q, u( %qy/f.find-sheet, %# )), setq( x, u( d.data-dictionary )), if( strmatch( %0, */* ), strcat( setq( w, rest( %0, / )), iter( before( %0, / ), case( 1, strmatch( %i0, v*=* ), setq( v, pedit( last( %i0, = ), _, %b )), t( setr( z, grab( u( %qy/d.search-order ), %i0* ))), setq( a, %qa %qz ), t( setr( z, grab( u( %qx/bio.template ), %i0*, .))), setq( t, %qt.[pedit( %qz, _, %b )] ), setq( t, %qt.[pedit( %i0, _, %b )] )), , @@)), setq( w, %0 )), setq( t, trim( %qt, b, . )), setq( p, u( %qy/f.statpath-validate-name, %qw )), if(t( %qa ), setq( p, filter( %qy/fil.list-stats-types, %qp, , , %qa ))), if(t( %qt ), setq( p, filter( %qy/fil.list-stats-tags, %qp, , , %qt, 1 ))), if(t( %qv ), setq( p, filter( %qy/fil.list-stats-values, %qp, , , %qv ))), setq( n, u( %qy/f.statname.workhorse, rest( %qp, . ))), setq( s, get( %qx/%qp )), case( 1, cand( t( %qp ), eq( words( %qp ), 1 )), u( display.stat.values.display.one ), gt( words( %qp ), 200 ), u( .msg, stat, Over two hundred matches. Please refine your search. ), cand( t( %qp ), gt( words( %qp ), 1 )), u( display.stat.values.display.multiple ), u( .msg, stat, Stat not found; try '<name>*' to find a list of possible matches )))
 
 /*
 --------------------------------------------------------------------------------
@@ -222,8 +226,8 @@ Returns Templates (%0) that match tags on Statpath (%1)
 	strcat( 
 
 // header: <name> (<type>) [<category>]
-		wheader( 
-			[edit( %qn, %(%), %(<type>%) )] 
+		wheader(  
+			[pedit( %qn, %(%), %(<type>%) )] 
 			%[[ulocal( 
 				[u( d.stat-funcs )]/f.statname.workhorse, 
 				first( %qp, . )
@@ -259,7 +263,7 @@ Returns Templates (%0) that match tags on Statpath (%1)
 			3, 
 			strcat( 
 				%r, %b, %b, ansi( h, Type ), :, %b, 
-				u( display.stat-valuelist, elements( %qs, 2, | ), or ), 
+				u( display.stat-valuelist, elementsmux( %qs, 2, | ), or ), 
 				%r, %b, %b, ansi( h, Details ), :, %b, 
 				u( display.stat-valuelist, last( %qs, | ))
 			), 
@@ -295,7 +299,7 @@ Returns Templates (%0) that match tags on Statpath (%1)
 		), 
 
 // prerequisites: <chargen only>
-		if( t( setr( x, elements( %qr, 2, | ))), 
+		if( t( setr( x, elementsmux( %qr, 2, | ))), 
 			wrap(
 				strcat( 
 					%r, ansi( h, Chargen ), :, %b, 
@@ -360,7 +364,7 @@ m: max length of above, used for formatting of '<trait name> [<trait category>]'
 		setq( z, u( d.stat-funcs )), 
 		setq( y, 
 			iter( %qp, 
-				edit( 
+				pedit( 
 					u( %qz/f.statname.workhorse, rest(%i0, .)), 
 					%(%), 
 					%(<type>%) 
@@ -377,7 +381,7 @@ m: max length of above, used for formatting of '<trait name> [<trait category>]'
 			strcat( 
 				%b%b, 
 				ljust( 
-					edit( u( %qz/f.statname.workhorse, rest(%i0, .)), 
+					pedit( u( %qz/f.statname.workhorse, rest(%i0, .)), 
 						%(%), %(<type>%) 
 					), 
 					%qm 

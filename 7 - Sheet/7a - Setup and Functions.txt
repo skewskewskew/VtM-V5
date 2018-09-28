@@ -78,7 +78,7 @@ does not have the ability to handle nesting.
 == CROSS-PLATFORM FUNCTIONS ====================================================
 */
 
-&.titlestr [v( d.nsc )]=titlestr( edit( %0, _, %b ))
+&.titlestr [v( d.nsc )]=titlestr( pedit( %0, _, %b ))
 &.isstaff [v( d.nsc )]=isstaff( %0 )
 
 
@@ -94,7 +94,7 @@ Here we're starting to use '.sheet.<pref>' as a way to set preferences.
 
 */
 
-&c.sheet [v( d.nsc )]=$^\+?sheet( [\s\S]+)?$:
+&c.sheet [v( d.nsc )]=$^\+?sheet( [\\s\\S]+)?$:
 	think cat( 
 		target:, setr( t, if( t( %1 ), trim( %1 ), %# )), %r, 
 		pmatch:, setr( p, pmatch( %qt )), %r, 
@@ -163,10 +163,10 @@ output: <value>, but if lookup is null then return something
 	localize( strcat( 
 		setq( 1, u( v( d.sfp )/f.statpath-without-instance, %1 )), 
 		setq( v, get( v( d.dd )/%q1 )), 
-		setq( s, elements( %qv, 2, | )), 
-		setq( v, elements( %qv, 1, | )), 
+		setq( s, elementsmux( %qv, 2, | )), 
+		setq( v, elementsmux( %qv, 1, | )), 
 		iter( get( %0/_%1 ), 
-			strcat( %i0, ., elements( %qs, match( %qv, %i0, . ), . )), 
+			strcat( %i0, ., elementsmux( %qs, match( %qv, %i0, . ), . )), 
 			., : 
 		)
 	))
@@ -214,7 +214,7 @@ more generic.
 		ulocal( f.cheat_getstat.with_name, %0, %2.%1, numeric ), 
 		if( words( setr( s, sort( lattr( %0/_%2.%1.* )))), 
 			|[iter( %qs, 
-				* [u( .titlestr, edit( %i0, ucstr( _%2.%1. ), ))], 
+				* [u( .titlestr, pedit( %i0, ucstr( _%2.%1. ), ))], 
 				, | 
 			)] 
 		)
@@ -245,10 +245,10 @@ For backwards compatibility.
 
 &f.cheat_getstat.pool [v( d.nsc )]=
 	strcat( 
-		titlestr( edit( %1, _, %b )), :, 
+		titlestr( pedit( %1, _, %b )), :, 
 		ulocal( f.cheat_getstat.numeric, %0, advantage.%1 ), |, 
 
-		titlestr( edit( %1, _, %b )), %b, Maximum:, 
+		titlestr( pedit( %1, _, %b )), %b, Maximum:, 
 		ulocal( f.cheat_getstat.numeric, %0, advantage.%1_maximum )
 	)
 
@@ -266,7 +266,7 @@ For backwards compatibility.
 &f.cheat_getstat.morality [v( d.nsc )]=
 	strcat( 
 		ulocal( f.cheat_getstat.with_name, %0, advantage.%1, numeric ), 
-		iter( edit( lattr( %0/_advantage.%1.* ), _ADVANTAGE.[ucstr( %1 )]., ), 
+		iter( pedit( lattr( %0/_advantage.%1.* ), _ADVANTAGE.[ucstr( %1 )]., ), 
 			strcat( 
 				|*, %b, 
 				(%i0), %b, 

@@ -164,7 +164,7 @@ returns: number of dice that are %1 or higher
 */
 
 &f.successes.standard [v( d.nr )]=
-	u( f.n-again-check, edit( %0, :, %b ), %1 )
+	u( f.n-again-check, pedit( %0, :, %b ), %1 )
 
 
 /*
@@ -204,9 +204,9 @@ returns: number of successes (weakness cannot cause critical failure)
 		sub( 
 			u( f.successes.standard, %0, %1 ), 
 // .. don't count 1's in <base> roll /if/ there is a <rote> section
-			if( strlen( elements( %0, 2, : )), 
-				words( graball( edit( rest( %0, : ), :, %b ), 1 )), 
-				words( graball( edit( %0, :, %b ), 1 ))
+			if( strlen( elementsmux( %0, 2, : )), 
+				words( graball( pedit( rest( %0, : ), :, %b ), 1 )), 
+				words( graball( pedit( %0, :, %b ), 1 ))
 			)
 		)
 	)

@@ -1,4 +1,14 @@
 /*
+
+NOTE TO RHOST USERS:
+
+This code uses #$ inside switch(). This passes the evaluated number as the
+value. Or something. You need to turn on compatibility.
+
+# --- Allow #$ substitutions to exist in switches?  Keep in mind, this can be a security
+#     risk if you do not properly check and code your switch()/switchall()/@switches.
+switch_substitutions 1
+
 ================================================================================
 == COMMANDS ====================================================================
 
@@ -39,7 +49,7 @@ function for dealing with degrading a damage type, say, from aggravated to
 lethal.
 
 --
-
+u( f.healhurt-errorcheck, #74, #74, bashing, 1, 0 )
 0: [<player>/]<type>=<amt>
 1: damage? (0 if hurt, 1 if heal)
 
@@ -101,7 +111,7 @@ q1: New Damage: <same>
 					setq( a, 
 						mul( -1, 
 							min( %qa, 
-								elements( 
+								elementsmux( 
 									%q0, 
 									match( u( d.health-types ), %qt )
 								)

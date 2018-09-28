@@ -174,7 +174,7 @@ that's why.
 	@pemit %qd=u( .msg, 
 		xp/deduct, 
 		strcat( 
-			moniker( %# ), %b, 
+			cname( %# ), %b, 
 			has just deducted you, %b, 
 			u( .plural, %qb, %qzExperience, %qzExperiences ), %b, 
 			for reason '%qr'

@@ -73,17 +73,26 @@ for other code.
 
 ## flags ########################################
 ## flags: approval
-flag_name marker0 approved
-flag_name marker1 NPC
-flag_name marker2 unapproved
-flag_name marker3 storyteller
+flag_name approved marker0 
+flag_name NPC marker1
+flag_name unapproved marker2
+flag_name storyteller marker3
 
-flag_access marker0 wizard
-flag_access marker1 wizard
-flag_access marker2 wizard
-flag_access marker3 wizard
+flag_access_set marker0 royalty
+flag_access_unset marker0 royalty
+flag_access_see marker0 royalty
 
+flag_access_set marker1 royalty
+flag_access_unset marker1 royalty
+flag_access_see marker1 royalty
 
+flag_access_set marker2 royalty
+flag_access_unset marker2 royalty
+flag_access_see marker2 royalty
+
+flag_access_set marker3 royalty
+flag_access_unset marker3 royalty
+flag_access_see marker3 royalty
 
 ================================================================================
 == @startup ====================================================================
@@ -134,7 +143,7 @@ for one reason or another, no longer is.
 		setq( s, 
 			grab( 
 // [v( d.approval_types )] didn't work here, returned '1' to everything, why?
-				|chargen|guest
+				empty|chargen|guest
 				|approved|storyteller|npc|staff
 				|unapproved|frozen|dead
 				|status|log, 
@@ -144,7 +153,7 @@ for one reason or another, no longer is.
 		), 
 
 		case( %qs, 
-			@@( null ), 
+			empty, 
 			cor( 
 				isstaff( %qp ), 
 				hasflag( %qp, approved ), 
@@ -153,22 +162,42 @@ for one reason or another, no longer is.
 			), 
 
 			approved, 
-			isapproved( %qp ), 
+      cor( 
+				isstaff( %qp ), 
+				hasflag( %qp, approved ), 
+				hasflag( %qp, npc ), 
+				hasflag( %qp, storyteller )
+			), 
 
 			staff, 
 			isstaff( %qp ), 
 
 			frozen, 
-			cand( not( isapproved( %qp )), hasattr( %qp, _approval.frozen )), 
+			cand( 
+        not( 
+          cor( 
+            isstaff( %qp ), 
+            hasflag( %qp, approved ), 
+            hasflag( %qp, npc ), 
+            hasflag( %qp, storyteller )
+            )), 
+        hasattr( %qp, _approval.frozen )), 
 
 			dead, 
-			cand( not( isapproved( %qp )), hasattr( %qp, _approval.dead )), 
+			cand( not( 
+            cor( 
+            isstaff( %qp ), 
+            hasflag( %qp, approved ), 
+            hasflag( %qp, npc ), 
+            hasflag( %qp, storyteller )
+            )), 
+          hasattr( %qp, _approval.dead )), 
 			
 			chargen, 
 			cor( 
 				isstaff( %qp ), 
 				not( cor( 
-					isapproved( %qp ), 
+          hasflag( %qp, approved ),
 					hasflag( %qp, unapproved ), 
 					haspower( %qp, guest ), 
 					strmatch( %qp, config( guest_char_num ))
@@ -199,9 +228,7 @@ for one reason or another, no longer is.
 			hasflag( %qp, %qs )
 		)
 	)
-
-
-
+	
 /* 
 ================================================================================
 == COMMANDS & SWITCHES =========================================================
@@ -433,13 +460,13 @@ cg/log
 	@set %1=unapproved !approved !npc !storyteller; 
 	@set %1=_approval.frozen:; 
 	@set %1=_approval.dead:%2; 
-	@pemit %0=u( .msg, cg/kill, Oh my god! You killed [moniker( %1 )]! )
+	@pemit %0=u( .msg, cg/kill, Oh my god! You killed [cname( %1 )]! )
 
 
 // -----------------------------------------------------------------------------
 // -- cg/log -------------------------------------------------------------------
 
-&c.cg/log [v( d.cg )]=$^\+?cg/log(\s?.*)$:
+&c.cg/log [v( d.cg )]=$^\+?cg/log(\\s?.*)$:
 	think strcat( 
 		q1:%b, setr( 1, trim( %1 )), %r, 
 		qp:%b, setr( p, if( strlen( %q1 ), pmatch( %q1 ), %# )), %r, 
@@ -470,7 +497,7 @@ cg/log
 // -- cg/status ----------------------------------------------------------------
 // What is your/player's current status
 
-&c.cg/status [v( d.cg )]=$^\+?cg/status(\s?.*)$:
+&c.cg/status [v( d.cg )]=$^\+?cg/status(\\s?.*)$:
 	think strcat( 
 		q1:%b, setr( 1, trim( %1 )), %r, 
 		qp:%b, setr( p, if( strlen( %q1 ), pmatch( %q1 ), %# )), %r, 
@@ -488,11 +515,11 @@ cg/log
 	@pemit %#=u( .msg, cg/status, 
 		cat( 
 			if( strmatch( %#, %qp ), 
-				Your, [moniker( %qp )]'s
+				Your, [cname( %qp )]'s
 			), 
 			approval status is:, 
 			if( t( %qs ), 
-				titlestr( edit( %qs, _, %b )), 
+				titlestr( pedit( %qs, _, %b )), 
 				Error %(%qs%) 
 			)
 		)
@@ -571,9 +598,9 @@ r: resulting log entry (may be added to _approval.frozen or *.dead)
 
 	@pemit %0=u( .msg, cg/%2, u( display.approval.change, %qp, %qa, %3, %qc )); 
 
-	@trig %!/trig.approval.switch/%2=%0, %qp, %qr; 
+	@trig me/trig.approval.switch/%2=%0, %qp, %qr; 
 
-
+// 	@trig #99/trig.approval.switch/approve={%#, #103, I approve!}; 
 
 // =============================================================================
 // == FUNCTIONS ================================================================
@@ -655,14 +682,14 @@ returns: number of seconds
 	localize( 
 		strcat( 
 			setq( a, get( %0/_approval.log )), 
-			setq( l, iter( %qa, elements( %i0, 2, : ), | )), 
+			setq( l, iter( %qa, elementsmux( %i0, 2, : ), | )), 
 			setq( l, if( t( %qa ), cat( %ql, secs( )))), 
 			setq( a, matchall( %qa, approved:*, |  )), 
 
 			ladd( 
 				iter( 
 					%qa, 
-					sub( elements( %ql, inc( %i0 )), elements( %ql, %i0 ))
+					sub( elementsmux( %ql, inc( %i0 )), elementsmux( %ql, %i0 ))
 				)
 			)
 		)
@@ -692,7 +719,7 @@ returns: number of seconds
 
 &display.approval.change [v( d.cg )]=
 	strcat( 
-		moniker( %0 ), %b, 
+		cname( %0 ), %b, 
 		status changed from '%1' to '%2', 
 		if( strlen( %3 ), %bwith comment '%3', )
 	)
@@ -710,7 +737,7 @@ returns: number of seconds
 // (will be used by 'log.add', 'freeze', and 'dead'
 
 &format.approval.log-item [v( d.cg )]=
-	%2:[secs()]:[moniker( %0 )]:%0:%3
+	%2:[secs()]:[cname( %0 )]:%0:%3
 
 
 // -----------------------------------------------------------------------------
@@ -726,14 +753,14 @@ returns: number of seconds
 &display.approval.log [v( d.cg )]=
 	localize( strcat( 
 		setq( a, 
-			lmax( iter( %2, strlen( elements( %i0, 1, : )), | ))
+			lmax( iter( %2, strlen( elementsmux( %i0, 1, : )), | ))
 		), 
 
 		setq( t, 
 			lmax( 
 				iter( %2, 
 					strlen( 
-						u( format.approval.timestamp, elements( %i0, 2, : ))
+						u( format.approval.timestamp, elementsmux( %i0, 2, : ))
 					), 
 					| 
 				)
@@ -743,24 +770,24 @@ returns: number of seconds
 		setq( s, 
 			lmax( iter( %2, 
 				add( 
-					strlen( elements( %i0, 3, : )), 
-					strlen( elements( %i0, 4, : )), 
+					strlen( elementsmux( %i0, 3, : )), 
+					strlen( elementsmux( %i0, 4, : )), 
 					3, // for '%b()'
 				), 
 				| 
 			))
 		), 
 		
-		wheader( Approval Log for [moniker( %1 )] ), %r, 
+		wheader( Approval Log for [cname( %1 )] ), %r, 
 		iter( %2, 
 			wrap( 
 				u( format.approval.log.line, %i0, %qa, %qt, %qs, * ), 
-				width( %0 ), 
-				@@( just ), 
-				@@( lefttext ), 
-				@@( righttext ), 
-				add( %qa, %qt, %qs, 9 )
-			), 
+				width( %0 ) ) ,
+//				, 
+//				, 
+//				, 
+//				add( %qa, %qt, %qs, 9 )
+//			
 			|, %r 
 		), %r, 
 		wfooter( u( .plural, words( %2, | ), entry, entries ))
@@ -777,13 +804,13 @@ returns: number of seconds
 
 &format.approval.log.line [v( d.cg )]=
 	cat( 
-		ljust( titlestr( edit( elements( %0, 1, : ), _, %b )), %1 ), %b, 
-		ljust( u( format.approval.timestamp, elements( %0, 2, : )), %2 ), %b, 
+		ljust( titlestr( pedit( elementsmux( %0, 1, : ), _, %b )), %1 ), %b, 
+		ljust( u( format.approval.timestamp, elementsmux( %0, 2, : )), %2 ), %b, 
 		ljust( 
-			[elements( %0, 3, : )] %([elements( %0, 4, : )]%), 
+			[elementsmux( %0, 3, : )] %([elementsmux( %0, 4, : )]%), 
 			%3 
 		), %b, 
-		trim( rest( elements( %0, 5, : ), %, ))
+		trim( rest( elementsmux( %0, 5, : ), %, ))
 	)
 
 
@@ -792,7 +819,7 @@ returns: number of seconds
 // 0: timestamp in seconds
 
 &format.approval.timestamp [v( d.cg )]=
-	timefmt( $H:$M $d.$m.$y, %0 )
+	ptimefmt( $H:$M $d.$m.$y, %0 )
 
 
 
@@ -860,13 +887,14 @@ All commands have the leading '+' as an option. No harm if you use it.
 		frozen: 'unapproved', may be limited by other systems
 		dead: 'unapproved', may be limited by other systems, cannot be undone	
 
-
-
-
 ################################################################################
 ## CG/SUBMIT ###################################################################
 
-This is an add-on to the Jobs Request System (found in a very different file).
+
+This system has been reworked to use Rockpath's Job System on Rhost. It should
+work seamlessly, but who knows. cg/submit simply creates a +jobs and a message
+to the player. It does NOT lock you out of cgen or any such thing. Possible
+future enhancement?
 
 When someone is convinced that they are ready for approval, they will type 
 'cg/submit' and the jobs system will take it from there.
@@ -876,14 +904,27 @@ When a staffer is convinced they're ready, they will use 'cg/approve'.
 Neither of these systems run 'cg/check'! It's up to staff to do it right!
 
 The rest is about dancing.
-
 */
 
-@fo me=&d.jrs me=[search( name=Jobs Request System <jrs> )]
+@fo me=&d.rjs [v( d.cg )]=search( name=Globals: Rockpath's Jobs System <RJS> )
+@fo me=&d.rjdb [v( d.cg )]=search( name=Rockpath's Job Database )
 
-// 3 aspirations (2 short-term, 1 long-term)
+@fo me=&d.rjs me=search( name=Globals: Rockpath's Jobs System <RJS> )
+@fo me=&d.rjdb me=search( name=Rockpath's Job Database )
 
-&d.content.cg/submit [v( d.jrs )]=
+@assert t( search( name=Globals: Rockpath's Jobs System <RJS> ) )=
+	{ 
+		think ansi( 
+			rhu, WARNING!!!, 
+			nh, %bCould not find "Globals: Rockpath's Jobs System <RJS>"! 
+			CG/SUBMIT code will not work until this is fixed. 
+		) 
+	}
+
+// Category to submit to. Change if needed. Makes sure exists in RJS.
+&d.rjs.category [v( d.cg )]=APP
+
+&d.content.cg/submit [v( d.cg )]=
 	Hello! This job is generated by 'cg/submit', asking staff to 
 	approve your character for role-play. They will be doing four things: %r%r
 	%b %b 1) Checking your stats : cg/check [name( %# )] %r
@@ -903,29 +944,31 @@ The rest is about dancing.
 
 // --
 
-think u( [v( d.jrs )]/d.content.cg/submit )
+think u( [v( d.cg )]/d.content.cg/submit )
 
 // --
 
-&c.cg/submit [v( d.jrs )]=$^\+?cg/submit:
+&c.cg/submit [v( d.cg )]=$^\+?cg/submit:
 	@assert isapproved( %#, chargen )={ 
 		@pemit %#=
 			u( .msg, cg/submit, 
 				You can only ask to be approved when you're in chargen. 
 			)
 	}; 
+	
+	@pemit %#=
+			u( .msg, cg/submit, 
+				Congratulations! You're all submitted. Please check the job created for any status updates on your application. 
+			);
 
-	@trigger %!/trig.command.request=
-		/cgsubmit [moniker( %# )]=[u( d.content.cg/submit, %# )], 
-		%#; 
+	@include/target/command [v( d.rjs )]/CMD`REQ-ADD=
+		[u( d.rjs.category )],
+		CGEN: [name( %# ) ],
+		[u( d.content.cg/submit )];
 
-@set v( d.jrs )/c.cg/submit=regexp
+// --		
 
-&d.cgsubmit.bucket [v( d.jrs )]=APPS
+@set v( d.cg )/c.cg/submit=regexp
 
-&d.cgsubmit.assign [v( d.jrs )]=+allstaff
 
-&d.cgsubmit.msg [v( d.jrs )]=
-
-&d.cgsubmit.prefix [v( d.jrs )]=CGEN
-
+*/

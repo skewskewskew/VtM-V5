@@ -27,9 +27,9 @@ outputs: Something legible (i.e., "Error Error Error")
 &display.roll-items [v( d.nr )]=
 	iter( 
 		trim( trim( %0, b, ` ), b, + ), 
-		edit( trim( %i0, b ), +, %b+%b, -, %b-%b ), 
+		pedit( trim( %i0, b ), +, %b+%b, -, %b-%b ), 
 		`, 
-		@@ 
+		@@( null )
 	)
 
 
@@ -37,7 +37,7 @@ outputs: Something legible (i.e., "Error Error Error")
 --------------------------------------------------------------------------------
 -- Display: Colorize Dice ------------------------------------------------------
 
-Would be much easier with regedit().
+Would be much easier with regpedit().
 
 Hilite a standard success.
 Hilite a chance roll of '1'.
@@ -225,9 +225,9 @@ Give it that '(<dice rolled)' look.
 		strcat( 
 			setq( 9, u( display.colorize.dice, %0 )), 
 			%(, 
-			trim( elements( %q9, 1 3, :, )), 
+			trim( elementsmux( %q9, 1 3, :, )), 
 			if( 
-				t( setr( 8, trim( elements( %q9, 2, :, )))), 
+				t( setr( 8, trim( elementsmux( %q9, 2, :, )))), 
 				%, Rote: %q8
 			), 
 			%) 
@@ -238,14 +238,18 @@ Give it that '(<dice rolled)' look.
 /*
 --------------------------------------------------------------------------------
 -- Display: Roll To Public -----------------------------------------------------
+
+Sample input: u( display.roll-to-public, %#, #80 #74))
+
+Output: u( display.roll-output, #74, public, #74  )
+
 */
 
 &display.roll-to-public [v( d.nr )]=
 	iter( %1, 
 		pemit( %i0, u( display.roll-output, %0, public, %i0  )), 
-		, @@ 
+		, @@( null )
 	)
-
 
 /*
 --------------------------------------------------------------------------------
@@ -340,7 +344,7 @@ internal:
 // switches? (ignore the two extended switches, pulled earlier)
 			setq( 0, 
 				trim( 
-					edit( 
+					pedit( 
 						rest( %qz, / ), 
 						grab( %qz, extended*, / ), @@( null ), 
 						grab( %qz, target*, / ), @@( null )

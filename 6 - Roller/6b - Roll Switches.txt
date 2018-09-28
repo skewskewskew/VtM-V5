@@ -117,7 +117,7 @@ y: the switch modifier (after '=')
 		iter( lcstr( trim( %0, l, / )), 
 			strcat( 
 				setq( 0, 
-					lcstr( sort( edit( lattr( %!/f.roll/* ), F.ROLL/, )))
+					lcstr( sort( pedit( lattr( %!/f.roll/* ), F.ROLL/, )))
 				), 
 				setq( x, before( %i0, = )), 
 				setq( y, rest( %i0, = )), 
@@ -134,7 +134,7 @@ y: the switch modifier (after '=')
 					/%q1[if( words( %qy ), =%qy )] 
 				)
 			), 
-			/, @@ 
+			/, @@( null )
 		)
 	)
 

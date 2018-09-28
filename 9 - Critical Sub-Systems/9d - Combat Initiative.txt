@@ -175,7 +175,7 @@ be shifted back by .01.
 */
 
 @create Initiative Tracker <it>=10
-@set Initiative Tracker <it>=inherit safe
+@set Initiative Tracker <it>=inherit safe sidefx
 @fo me=&d.init me=[search( name=Initiative Tracker <it> )]
 
 @parent Initiative Tracker <it>=codp
@@ -375,7 +375,7 @@ a: attribute name
 			name( %qs ), 
 			strcat( 
 				setq(e, npc|%qe), 
-				titlestr( edit( %qs, _, %b ))
+				titlestr( pedit( %qs, _, %b ))
 			)
 		), 
 // .. extras
@@ -443,7 +443,7 @@ If staff, do it, else ask for 'init/clear YES'.
 //			monitor( init/clear: %N at [name(loc(%#))] %([loc(%#)]%) ), 
 
 // .. clear inits
-			iter( lattr(%ql/_init.*), set(%ql, %i0:), , @@ ), 
+			iter( lattr(%ql/_init.*), set(%ql, %i0:), , @@( null ) ), 
 
 // .. notify everyone
 			remit( %ql, 
@@ -562,7 +562,7 @@ returns: dbref if pc, name if npc, #-1 if not allowed
 		setq( t, u( .pmatch, if( %0, %0, %1 ))), 
 		case( 1, 
 			strmatch( %qt, %1 ), %qt, 
-			not( valid( attrname, edit( %0, %b, _ ))), 
+			not( valid( attrname, pedit( %0, %b, _ ))), 
 			#-1 That's Not a Good Name, 
 
 			not( %qt ), 
@@ -627,7 +627,7 @@ Needs to be recursive, so we prime the resolver
 &f.init.add.new [v( d.init )]=
 	strcat( 
 		set( %1, 
-			_init.[edit( %0, %b, _ )]:
+			_init.[pedit( %0, %b, _ )]:
 			%2.[u( f.init.tiebreaker-roll )]|
 			%3|
 			[setunion( n %4, )]
@@ -864,14 +864,14 @@ Hey, past self, I have a question:
 
 &c.init/roll [v( d.init )]=
 	strcat( 
-		setq( 0, edit( %0, -, +- )), 
+		setq( 0, pedit( %0, -, +- )), 
 
 		setq( s, before( %q0, + )), 
 		setq( i, rpad( trim( rest( %qs, / )), 2, 0 )), 
 		setq( s, ulocal( f.validate.init-subject, before( %qs, / ), %# )), 
 
 // +a + b -> a b, a+- b -> a -b. Then ladd( )
-		setq( m, ladd( edit( edit( rest( %q0, + ), +, %b ), -%b, %b- ))), 
+		setq( m, ladd( pedit( pedit( rest( %q0, + ), +, %b ), -%b, %b- ))), 
 		setq( r, rand( 1, 10 )), 
 
 		setq( f, extract( rest( get( loc( %# )/_init.%qs ), | ), 3, 1, . )), 
@@ -957,7 +957,7 @@ a: attribute for subject, if any
 			u( .msg, init/remove, rest( %qs )), 
 
 // subject has no init attribute
-			hasattr( %ql, setr( a, _init.[edit( %qs, %b, _ )] )), 
+			hasattr( %ql, setr( a, _init.[pedit( %qs, %b, _ )] )), 
 			u( .msg, init/remove, Subject has has no initiative to remove ), 
 
 // dbref & approved, or npc: remove

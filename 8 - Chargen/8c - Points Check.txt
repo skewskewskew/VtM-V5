@@ -22,7 +22,7 @@ a: attributes
 		setq( a, sort( u( f.allocated.attributes, %0, %1 ), n, / )), 
 		cand( 
 			eq( first( %qa, / ), 3 ), 
-			eq( elements( %qa, 2, / ), 4 ), 
+			eq( elementsmux( %qa, 2, / ), 4 ), 
 			eq( last( %qa, / ), 5 )
 		)
 	)
@@ -47,7 +47,7 @@ s: skills
 		setq( s, sort( u( f.allocated.skills, %0, %1 ), n, / )), 
 		and(
 			eq( first( %qs, / ), 4 ), 
-			eq( elements( %qs, 2, / ), 7 ), 
+			eq( elementsmux( %qs, 2, / ), 7 ), 
 			eq( last( %qs, / ), 11 )
 		)
 	)

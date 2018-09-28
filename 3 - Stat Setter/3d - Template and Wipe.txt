@@ -111,7 +111,7 @@ stat/wipe thenomain=YES
 &f.statpaths-for-template [v( d.ss )]=
 		setunion( 
 			filter( filter.stat-allowed-for-template, 
-				edit( 
+				pedit( 
 					lattr( [u( d.data-dictionary )]/default.* ), 
 					DEFAULT., 
 				), 
@@ -162,7 +162,7 @@ output: may be a list of spaces or some setting errors
 
 		setq( m, setunion( iter( %2, first( %i0, . )), )), 
 		iter( %qm, 
-			[divider( titlestr( edit( %i0, _, %b ) ))]%r
+			[divider( titlestr( pedit( %i0, _, %b ) ))]%r
 			[iter( graball( %2, %i0.* ), 
 				strcat( 
 					%b%b, 
@@ -221,7 +221,7 @@ think filter( v( d.ss )/filter.stat-allowed-for-template, merit.direction_sense 
 
 think filter( v( d.ss )/filter.stat-allowed-for-template, merit.direction_sense merit.unseen_sense_() merit.common_sense, , , human )
 
-think filter( v( d.ss )/filter.stat-allowed-for-template, edit( lattr( dd/default.* ), DEFAULT., ), , , vampire )
+think filter( v( d.ss )/filter.stat-allowed-for-template, pedit( lattr( dd/default.* ), DEFAULT., ), , , vampire )
 
 
 
@@ -348,7 +348,7 @@ We put bio.template first, because it is the most important stat on the game.
 &f.statpaths-from-sheet [v( d.ss )]=
 	cat( 
 		BIO.TEMPLATE, 
-		edit( 
+		pedit( 
 			iter( 
 				u( [u( d.stat-funcs )]/d.search-order ), 
 				iter( lattr( %0/_%i0.* ), rest( %i0, _ ))
